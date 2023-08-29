@@ -1,21 +1,24 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-const authRouter = require('./auth'); // Adjust the path as needed
+const express = require('express');
+const app = express();
+var cors = require('cors')
+app.use(cors());
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/www'));
+const path = require('path');
+app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
 
-// Use the authRouter for handling authentication routes
-app.use(authRouter);
+console.log(__dirname);
 
-app.listen(3000, () => {
+app.listen(3000, "localhost", function() {
     var d = new Date();
     var n = d.getHours();
     var m = d.getMinutes();
-    console.log("Server has been started at: " + n + " : " + m);
-});
 
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/www/form.html');
+    console.log(`Server has been started at: ${n}:${m}`);
 });
+// Use the authRouter for handling authentication routes
+app.post('/login', require('./router/postLogin'));
+//app.post('/server/router/postLoginafter', require('./router/postLoginafter'));
+
