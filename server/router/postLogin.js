@@ -7,7 +7,6 @@ module.exports = function(req, res) {
         if (err) throw err;
         let userArray = JSON.parse(data);
         let user = userArray.find(user => user.email === u && user.password === p);
-        console.log(user.email,user.password)  
         if (user) {
             res.send({
                 valid: true,
