@@ -1,0 +1,27 @@
+body {
+    padding-top: 60px; /* To prevent content from being hidden under the fixed navbar */
+  }
+  .navbar-default {
+    background-color: #333; /* Change the background color of the navbar */
+  }
+  .navbar-default .navbar-nav > li > a {
+    color: white; /* Change the text color of the navbar links */
+  }
+  .navbar-default .navbar-nav > li.active > a,
+  .navbar-default .navbar-nav > li.active > a:hover,
+  .navbar-default .navbar-nav > li.active > a:focus {
+    background-color: #555; /* Change the background color of the active navbar link */
+  }
+  .navbar-default .navbar-nav > li > a:hover {
+    background-color: #444; /* Change the background color of the navbar link on hover */
+  }
+  .navbar-default .navbar-nav.navbar-right > li > a {
+    color: white; /* Change the text color of the right-aligned navbar links */
+  }
+  .navbar-nav {
+    display: flex;
+    flex-direction: row; /* Arrange the links horizontally */
+  }
+  .navbar-nav > li {
+    margin-right: 15px; /* Add some spacing between the links */
+  }

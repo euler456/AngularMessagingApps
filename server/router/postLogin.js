@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 module.exports = function(req, res) {
-    var u = req.body.username;
+    var u = req.body.email;
     var p = req.body.pwd;
     fs.readFile('./data/users.json', 'utf8', function(err, data) {
         if (err) throw err;
@@ -11,9 +11,10 @@ module.exports = function(req, res) {
             res.send({
                 valid: true,
                 user: {
+                    userid: user.userid,
                     username: user.username,
-                    birthdate: user.birthdate,
-                    age: user.age,
+                    roles: user.roles,
+                    groups: user.groups,
                     email: user.email
                 }
             });

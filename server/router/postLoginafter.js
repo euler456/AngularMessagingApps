@@ -1,21 +1,18 @@
 var fs = require('fs');
-module.exports = function (req, res){
-    let userobj = {
-    "userid": req.body.userid,
-    "username": req.body.username,
-    "userbirthdate": req.body.userbirthdate,
-    "userage": req.body.userage
-    }
-    let uArray = [];
-    fs.readFile(' server/data/users.json', 'utf8', function(err, data){
-    if (err) throw err;
-        uArray = JSON.parse (data);
-        uArray.push(userobj); 
-        console.log(userobj) ;
-        uArrayjson = JSON.stringify(uArray);
-    fs.writeFile('server/data/users.json', uArrayjson, 'utf-8', function(err) {
+
+module.exports = function (req, res) {
+    const groupId = req.body.groupID; // Get the group ID from the request
+    console.log(groupId)
+    fs.readFile('./data/users.json', 'utf8', function (err, data) {
         if (err) throw err;
-        res.send(uArray);
+        let userArray = JSON.parse(data);
+        // Filter user objects based on the provided group ID
+        const matchingUsers = userArray.filter(user => user.groups === groupId
+            );
+        // Extract usernames from the matching user objects
+        const usernames = matchingUsers.map(user => user.username);
+        console.log(usernames);
+        res.send(usernames);
+
     });
-});
-}
+};

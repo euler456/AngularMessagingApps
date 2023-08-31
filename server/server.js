@@ -20,5 +20,5 @@ app.listen(3000, "localhost", function() {
 });
 // Use the authRouter for handling authentication routes
 app.post('/login', require('./router/postLogin'));
-//app.post('/server/router/postLoginafter', require('./router/postLoginafter'));
+app.post('/loginafter', require('./router/postLoginafter'));
 

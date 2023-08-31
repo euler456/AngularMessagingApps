@@ -1,0 +1,16 @@
+<div class="container">
+    <h2>Select a Group and Channel</h2>
+    <div *ngFor="let group of groups">
+      <h3>{{ group.name }}</h3>
+      <ul>
+        <li *ngFor="let channel of group.channels">
+          <label>
+            <input type="radio" name="selectedChannel" [value]="channel.id" (change)="selectChannel(group.id, channel.id)">
+            {{ channel.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
+    <button (click)="navigateToChat()">Start Chat</button>
+  </div>
+  

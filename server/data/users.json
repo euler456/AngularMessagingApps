@@ -1,24 +1,27 @@
 [
     {
-        "username": "user1",
-        "birthdate": "1990-01-01",
-        "age": 31,
+        "username": "uuuu",
+        "userid":1,
+        "roles": "admin",
+        "groups": 2,
         "email": "abc@gmail.com",
         "password": "123",
         "valid": true
     },
     {
-        "username": "user2",
-        "birthdate": "1990-01-01",
-        "age": 31,
+        "username": "eeee",
+        "userid":2,
+        "roles": "user",
+        "groups": 2,
         "email": "user2@example.com",
         "password": "password2",
         "valid": true
     },
     {
-        "username": "user3",
-        "birthdate": "1990-01-01",
-        "age": 31,
+        "username": "uewer3",
+        "userid":3,
+        "roles": "groupadmin",
+        "groups": 1,
         "email": "user3@example.com",
         "password": "password3",
         "valid": true

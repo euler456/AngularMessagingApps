@@ -7,13 +7,17 @@ import { LoginComponent } from './login/login.component';
 import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { GroupChannelSelectionComponent } from './group-channel-selection/group-channel-selection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     AccountComponent,
-    ProfileComponent
+    ProfileComponent,
+    DashboardComponent,
+    GroupChannelSelectionComponent
     
   ],
   imports: [

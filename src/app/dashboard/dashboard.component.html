@@ -1,0 +1,40 @@
+<div class="container">
+  <h1>Welcome to Your Dashboard</h1>
+
+  <div *ngIf="userGroups.length > 0; else noGroups">
+    <h2>Your Groups:</h2>
+    <ul>
+      <li *ngFor="let group of userGroups">
+        <p>Group ID: {{ getGroupIDFromStorage() }}</p>
+        <p>Group Members:</p>
+        <ul>
+          <li *ngFor="let username of group.usernames">
+            {{ username }}
+          </li>
+        </ul>
+        
+        <!-- Form for managing group -->
+        <div class="group-form">
+          <form>
+            <label for="newChannel">Create New Channel:</label>
+            <input type="text" id="newChannel" name="newChannel">
+            <button type="submit">Create</button>
+          </form>
+          
+          <form>
+            <label for="deleteChannel">Delete Channel:</label>
+            <select id="deleteChannel" name="deleteChannel">
+              <option *ngFor="let channel of group.channels" [value]="channel.id">{{ channel.name }}</option>
+            </select>
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- No groups message -->
+  <ng-template #noGroups>
+    <p>You are not a member of any groups.</p>
+  </ng-template>
+</div>
