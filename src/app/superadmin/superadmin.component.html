@@ -1,0 +1,54 @@
+
+<!-- Display user data for superadmin -->
+<div *ngIf="isAdmin">
+  <h3>Manage Users</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.userId }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+          <button class="btn btn-primary" (click)="changeUserRole(user.userId, 'groupadmin')">Make Group Admin</button>
+          <button class="btn btn-primary" (click)="changeUserRole(user.userId, 'superadmin')">Make Superadmin</button>
+          <button class="btn btn-danger" (click)="deleteUser(user.userId)">Delete User</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Create new user -->
+<!-- Create new user -->
+<h3>Create New User</h3>
+<form>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="newUsername">Username</label>
+    <input id="newUsername" class="form-control" type="text" name="newUsername" [(ngModel)]="newUser.username">
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="newEmail">Email</label>
+    <input id="newEmail" class="form-control" type="email" name="newEmail" [(ngModel)]="newUser.email">
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="newRoles">Roles</label>
+    <input id="newRoles" class="form-control" type="text" name="newRoles" [(ngModel)]="newUser.roles">
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="newPassword">Password</label>
+    <input id="newPassword" class="form-control" type="password" name="newPassword" [(ngModel)]="newUser.password">
+  </div>
+  <button type="button" class="btn btn-success btn-block mb-4" (click)="createUser()">Create User</button>
+</form>
+
+
+</div>

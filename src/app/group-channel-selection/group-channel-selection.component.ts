@@ -27,8 +27,8 @@ export class GroupChannelSelectionComponent implements OnInit {
     // Add more groups and channels here
   ];
 
-  selectedGroup: number = null;
-  selectedChannel: number = null;
+  selectedGroup: number = -1; // Default value to indicate no selection
+  selectedChannel: number = -1; // Default value to indicate no selection
 
   constructor(private router: Router) {}
 
@@ -40,7 +40,7 @@ export class GroupChannelSelectionComponent implements OnInit {
   }
 
   navigateToChat(): void {
-    if (this.selectedGroup !== null && this.selectedChannel !== null) {
+    if (this.selectedGroup !== -1 && this.selectedChannel !== -1) {
       sessionStorage.setItem('selectedGroupId', this.selectedGroup.toString());
       sessionStorage.setItem('selectedChannelId', this.selectedChannel.toString());
       this.router.navigate(['/chat']); // Replace 'chat' with your chat component route

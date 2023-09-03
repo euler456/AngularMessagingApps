@@ -5,10 +5,12 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AccountComponent } from './account/account.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ChatComponent } from './chat/chat.component'; // Import the ChatComponent
+import { SuperadminComponent } from './superadmin/superadmin.component'; // Import the ChatComponent
 
 
-const routes: Routes = [{path:'login', component: LoginComponent},{path:'dashboard', component: DashboardComponent},
-{path:'profile', component: ProfileComponent},{path:'account', component: AccountComponent}];
+const routes: Routes = [{path:'login', component: LoginComponent},{path:'superadmin', component: SuperadminComponent},{path:'dashboard', component: DashboardComponent},
+{path:'profile', component: ProfileComponent},{path:'account', component: AccountComponent},{ path: 'chat', component: ChatComponent }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

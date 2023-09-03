@@ -13,16 +13,15 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     // Retrieve user profile data from session storage
     this.userProfile.username = sessionStorage.getItem('username');
-    this.userProfile.groups = sessionStorage.getItem('groups');
-    this.userProfile.roles = sessionStorage.getItem('roles');
+    this.userProfile.email = sessionStorage.getItem('emails');
+
   }
 
   // Add a method to update user profile
   updateProfile() {
     // Update user profile data in session storage
     sessionStorage.setItem('username', this.userProfile.username);
-    sessionStorage.setItem('groups', this.userProfile.groups);
-    sessionStorage.setItem('roles', this.userProfile.roles);
+    sessionStorage.setItem('emails', this.userProfile.email);
     alert('Profile updated successfully!');
   }
 }

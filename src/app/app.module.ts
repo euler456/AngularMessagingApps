@@ -9,6 +9,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { GroupChannelSelectionComponent } from './group-channel-selection/group-channel-selection.component';
+import { ChatComponent } from './chat/chat.component';
+import { SuperadminComponent } from './superadmin/superadmin.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { GroupChannelSelectionComponent } from './group-channel-selection/group-
     AccountComponent,
     ProfileComponent,
     DashboardComponent,
-    GroupChannelSelectionComponent
+    GroupChannelSelectionComponent,
+    ChatComponent,
+    SuperadminComponent
     
   ],
   imports: [

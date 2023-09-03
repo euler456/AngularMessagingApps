@@ -1,0 +1,14 @@
+<div class="chat-container">
+  <div class="chat-messages">
+    <ng-container *ngFor="let m of messages">
+      <!-- Use div elements to display messages -->
+      <div *ngIf="m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
+        {{ m.content }}
+      </div>
+    </ng-container>
+  </div>
+  <div class="chat-input">
+    <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control" placeholder="Type your message..." />
+    <button (click)="chat()" class="btn btn-primary">Send</button>
+  </div>
+</div>

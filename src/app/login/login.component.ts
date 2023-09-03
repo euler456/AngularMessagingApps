@@ -28,11 +28,10 @@ export class LoginComponent implements OnInit {
       .subscribe((data: any) => {
         alert(JSON.stringify(this.userpwd));
         if (data.valid == true) {
-          sessionStorage.setItem('userid', data.user.userid);
+          sessionStorage.setItem('userid', `${data.user.userid}`);
           sessionStorage.setItem('username', data.user.username);
-          sessionStorage.setItem('roles', data.user.roles); // Adjust this based on your server response
-          sessionStorage.setItem('groups', data.user.groups); // Adjust this based on your server response
-            
+          sessionStorage.setItem('roles', data.user.roles); // Adjust this based on your server response   
+          sessionStorage.setItem('emails', data.user.email); // Adjust this based on your server response                     
           this.router.navigateByUrl('account');
         } else {
           console.log(data);
