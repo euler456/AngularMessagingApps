@@ -4,7 +4,7 @@ module.exports = function (req, res) {
     var action = req.body.action;
     var users = readUsersFile();
 
-    if (action === 'listUsers') {
+    if (action === 'listUsers' || action === 'fetchUsers') {
         // Return the list of users
         res.send({ users: users });
     } else if (action === 'createUser') {
@@ -16,14 +16,16 @@ module.exports = function (req, res) {
         res.send({ success: true });
     } else if (action === 'deleteUser') {
         // Delete a user
-        var userId = req.body.userId;
+        var userId = Number(req.body.userId); // Convert userId to a number
+        console.log(userId);
         users = users.filter(user => user.userid !== userId);
         writeUsersFile(users);
         res.send({ success: true });
     } else if (action === 'changeUserRole') {
         // Change user role (superadmin, groupadmin, user)
-        var userId = req.body.userId;
+        var userId = Number(req.body.userId);
         var newRole = req.body.newRole;
+        console.log(newRole)
         var user = users.find(user => user.userid === userId);
         if (user) {
             user.roles = newRole;

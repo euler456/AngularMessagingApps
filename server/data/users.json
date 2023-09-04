@@ -1,33 +1,31 @@
 [
   {
-    "username": "aaa",
-    "userid": 1,
+    "username": "admin",
+    "email": "admin@gmail.com",
     "roles": "admin",
-    "email": "abc@gmail.com",
-    "password": "123",
-    "valid": true
-  },
-  {
-    "username": "bbbb",
-    "userid": 2,
-    "roles": "user",
-    "email": "user2@example.com",
-    "password": "password2",
-    "valid": true
-  },
-  {
-    "username": "uewer3",
-    "userid": 3,
-    "roles": "groupadmin",
-    "email": "user3@example.com",
-    "password": "password3",
-    "valid": true
-  },
-  {
-    "username": "dfsf",
-    "email": "abc@gmail.dfsf",
-    "roles": "user",
     "password": "123",
     "userid": 1
   }
+  ,{
+    "username": "susss",
+    "email": "aaa@gmail.com",
+    "roles": "admin",
+    "password": "123",
+    "userid": 2,
+    "groupid": [
+      1,
+      2
+    ]
+  },
+  {
+    "username": "user1",
+    "email": "abc@gmail.com",
+    "roles": "groupadmin",
+    "password": "123",
+    "userid": 3,
+    "groupid": [
+      1,2
+    ]
+  }
+  
 ]

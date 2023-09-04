@@ -4,13 +4,12 @@
   <div *ngIf="userGroups.length > 0; else noGroups">
     <h2>Your Groups:</h2>
     <ul>
-      <li *ngFor="let groupName of userGroups">
-        <p>Group Name: {{ groupName }}</p>
-        <!-- No need to display group members and channels for a simple array of group names -->
+      <li *ngFor="let group of userGroups">
+        <a (click)="saveSelectedGroup(group.groupid)" [routerLink]="['/chat']">{{ group.group }}</a>
       </li>
     </ul>
   </div>
-  
+
   <!-- No groups message -->
   <ng-template #noGroups>
     <p>You are not a member of any groups.</p>

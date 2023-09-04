@@ -1,34 +1,20 @@
 [
   {
+    "groupid": 1,
     "group": "Awesome Team 1",
-    "members": [
-      {
-        "userid": 1
-      },
-      {
-        "userid": 2
-      }
-    ],
-    "groupadmin": [
-      {
-        "userid": 1
-      }
+    "channels": [
+      "Wednesday Lecture",
+      "Friday Workshop",
+      "Common Time",
+      "Quiz Room"
     ]
   },
   {
+    "groupid": 2,
     "group": "Awesome Team 2",
-    "members": [
-      {
-        "userid": 1
-      },
-      {
-        "userid": 2
-      }
-    ],
-    "groupadmin": [
-      {
-        "userid": 3
-      }
+    "channels": [
+      "Bob's Room 1",
+      "Bob's Room 2"
     ]
   }
 ]

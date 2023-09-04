@@ -45,4 +45,9 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
+
+  saveSelectedGroup(groupId: number): void {
+    // Save the selected groupId in session storage
+    sessionStorage.setItem('selectedGroupId', groupId.toString());
+  }
 }

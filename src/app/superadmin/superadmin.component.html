@@ -14,14 +14,14 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of users">
-        <td>{{ user.userId }}</td>
+        <td>{{ user.userid }}</td>
         <td>{{ user.username }}</td>
         <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
+        <td>{{ user.roles }}</td>
         <td>
-          <button class="btn btn-primary" (click)="changeUserRole(user.userId, 'groupadmin')">Make Group Admin</button>
-          <button class="btn btn-primary" (click)="changeUserRole(user.userId, 'superadmin')">Make Superadmin</button>
-          <button class="btn btn-danger" (click)="deleteUser(user.userId)">Delete User</button>
+          <button class="btn btn-primary" (click)="changeUserRole(user.userid, 'groupadmin')">Make Group Admin</button>
+          <button class="btn btn-primary" (click)="changeUserRole(user.userid, 'admin')">Make Superadmin</button>
+          <button class="btn btn-danger" (click)="deleteUser(user.userid)">Delete User</button>
         </td>
       </tr>
     </tbody>

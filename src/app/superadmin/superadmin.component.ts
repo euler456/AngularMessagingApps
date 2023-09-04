@@ -34,11 +34,15 @@ export class SuperadminComponent implements OnInit {
   }
 
   // Fetch user data (for superadmin)
+ // Method to fetch users (for superadmin)
   fetchUsers() {
-    // Send request to fetch user data from the backend
-    this.httpClient.get<any[]>(BACKEND_URL + '/superadmin', httpOptions).subscribe(
-      (users: any[]) => {
-        this.users = users;
+    // Prepare the request payload
+    const requestPayload = { action: 'fetchUsers' };
+
+    // Send the request to the backend
+    this.httpClient.post(BACKEND_URL + '/superadmin', requestPayload, httpOptions).subscribe(
+      (response: any) => {
+        this.users = response.users;
       },
       (error) => {
         console.error('Error fetching user data:', error);
@@ -47,10 +51,11 @@ export class SuperadminComponent implements OnInit {
     );
   }
 
+
   // Method to change user role (for superadmin)
   changeUserRole(userId: string, newRole: string) {
     // Send request to the backend to change user role
-    const requestPayload = { userId: userId, newRole: newRole };
+    const requestPayload = {action: 'changeUserRole', userId: userId, newRole: newRole };
     this.httpClient.post(BACKEND_URL + '/superadmin', requestPayload, httpOptions).subscribe(
       () => {
         alert('User role changed successfully!');
@@ -100,8 +105,14 @@ export class SuperadminComponent implements OnInit {
   }
   // Method to delete a user (for superadmin)
   deleteUser(userId: string) {
+    const requestPayload = {
+      action: 'deleteUser',
+      userId: userId
+    };
+    console.log(requestPayload)
     // Send request to the backend to delete a user
-    this.httpClient.delete(`${BACKEND_URL}/superadmin/${userId}`, httpOptions).subscribe(
+    this.httpClient.post(BACKEND_URL + '/superadmin', requestPayload, httpOptions)
+    .subscribe(
       () => {
         alert('User deleted successfully!');
         // Update the user data after deleting a user

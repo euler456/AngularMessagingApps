@@ -1,14 +1,45 @@
 <div class="chat-container">
-  <div class="chat-messages">
-    <ng-container *ngFor="let m of messages">
-      <!-- Use div elements to display messages -->
-      <div *ngIf="m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
-        {{ m.content }}
-      </div>
-    </ng-container>
+  <!-- Users list (left side) -->
+  <div class="chat-users">
+    <h3>Users:</h3>
+    <ul>
+      <!-- Replace with a loop over the list of users -->
+      <li *ngFor="let user of usersList">{{ user.name }}</li>
+    </ul>
   </div>
-  <div class="chat-input">
-    <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control" placeholder="Type your message..." />
-    <button (click)="chat()" class="btn btn-primary">Send</button>
+  
+  <!-- Chat area (middle) -->
+  <div class="chat-area">
+    <!-- Chat header -->
+    <div class="chat-header">
+      <h3>Channel Name</h3>
+      <!-- Add channel options or settings here -->
+    </div>
+
+    <!-- Chat messages -->
+    <div class="chat-messages">
+      <ng-container *ngFor="let m of messages">
+        <!-- Use div elements to display messages -->
+        <div *ngIf="m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
+          <span class="message-sender">{{ m.sender }}</span>
+          <span class="message-content">{{ m.content }}</span>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Chat input -->
+    <div class="chat-input">
+      <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control" placeholder="Type your message..." />
+      <button (click)="chat()" class="btn btn-primary">Send</button>
+    </div>
+  </div>
+  
+  <!-- Channels list (right side) -->
+  <div class="chat-channels">
+    <h3>Channels:</h3>
+    <ul>
+      <!-- Replace with a loop over the list of channels -->
+      <li *ngFor="let channel of channelsList">{{ channel.name }}</li>
+    </ul>
   </div>
 </div>
