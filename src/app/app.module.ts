@@ -8,9 +8,9 @@ import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { GroupChannelSelectionComponent } from './group-channel-selection/group-channel-selection.component';
 import { ChatComponent } from './chat/chat.component';
 import { SuperadminComponent } from './superadmin/superadmin.component';
+import { GroupAdminPanelComponent } from './group-admin-panel/group-admin-panel.component';
 
 @NgModule({
   declarations: [
@@ -19,9 +19,9 @@ import { SuperadminComponent } from './superadmin/superadmin.component';
     AccountComponent,
     ProfileComponent,
     DashboardComponent,
-    GroupChannelSelectionComponent,
     ChatComponent,
-    SuperadminComponent
+    SuperadminComponent,
+    GroupAdminPanelComponent
     
   ],
   imports: [

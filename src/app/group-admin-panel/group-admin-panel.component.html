@@ -1,0 +1,65 @@
+<div class="group-creation">
+  <h3>Create Group</h3>
+  <form (ngSubmit)="createGroup()">
+    <input
+      type="text"
+      [(ngModel)]="groupName"
+      placeholder="Group Name"
+      required
+    />
+    <button type="submit">Create Group</button>
+  </form>
+</div>
+
+<div class="channel-creation">
+  <h3>Create Channel</h3>
+  <select [(ngModel)]="selectedGroupId" (ngModelChange)="onGroupChange()">
+    <option *ngFor="let group of groups" [value]="group.groupid">{{
+      group.group
+    }}</option>
+  </select>
+  <form (ngSubmit)="createChannel()">
+    <input
+      type="text"
+      [(ngModel)]="channelName"
+      placeholder="Channel Name"
+      required
+      [disabled]="selectedGroupId === null"
+    />
+    <button type="submit" [disabled]="selectedGroupId === null">Create Channel</button>
+  </form>
+</div>
+
+<div class="group-list">
+  <h3>Groups</h3>
+  <ul>
+    <li *ngFor="let group of groups">
+      {{ group.group }}
+      <button (click)="removeGroup(group.groupid)">Remove Group</button>
+
+      <!-- Add User to Group -->
+      <select [(ngModel)]="selectedUserId">
+        <option *ngFor="let user of users" [value]="user.userId">{{ user.username }}</option>
+      </select>
+      <button (click)="addUserToGroup(group.groupid)">Add User to Group</button>
+
+      <!-- Remove User from Group -->
+      <button (click)="removeUserFromGroup(group.groupid)">Remove User from Group</button>
+    </li>
+  </ul>
+</div>
+
+<div class="channel-list">
+  <h3>Channels</h3>
+  <ul>
+    <li *ngFor="let group of groups">
+      <h4>{{ group.group }}</h4>
+      <ul>
+        <li *ngFor="let channel of group.channels">
+          {{ channel }}
+          <button (click)="removeChannel(group.groupid, channel)">Remove Channel</button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

@@ -68,6 +68,8 @@ export class SuperadminComponent implements OnInit {
       }
     );
   }
+  // Method to change user role to "user" (for superadmin)
+
 
   // Method to create a new user (for superadmin)
   createUser() {
@@ -93,7 +95,7 @@ export class SuperadminComponent implements OnInit {
             valid: true,
           };
         } else {
-          alert('Failed to create user. Please check your input.');
+          alert(response.message);
         }
       },
       (error) => {
@@ -104,6 +106,7 @@ export class SuperadminComponent implements OnInit {
     );
   }
   // Method to delete a user (for superadmin)
+  
   deleteUser(userId: string) {
     const requestPayload = {
       action: 'deleteUser',

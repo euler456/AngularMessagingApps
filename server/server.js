@@ -27,6 +27,7 @@ app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
 app.post('/login', require('./router/postLogin'));
 app.post('/loginafter', require('./router/postLoginafter'));
 app.post('/superadmin', require('./router/superadmin'));
+app.post('/chat', require('./router/chat'));
 
 // Socket.io setup
 sockets.connect(io, PORT);

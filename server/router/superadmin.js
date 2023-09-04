@@ -10,10 +10,14 @@ module.exports = function (req, res) {
     } else if (action === 'createUser') {
         // Create a new user
         var newUser = req.body.user;
-        newUser.userid = generateUserId(users);
-        users.push(newUser);
-        writeUsersFile(users);
-        res.send({ success: true });
+        if (!isUserUnique(newUser.username, newUser.email, users)) {
+            res.send({ success: false, message: 'Username or email already exists.' });
+        } else {
+            newUser.userid = generateUserId(users);
+            users.push(newUser);
+            writeUsersFile(users);
+            res.send({ success: true });
+        }        
     } else if (action === 'deleteUser') {
         // Delete a user
         var userId = Number(req.body.userId); // Convert userId to a number
@@ -57,10 +61,15 @@ function writeUsersFile(users) {
 
 function generateUserId(users) {
     var maxId = 0;
-    for (var i = 3; i < users.length; i++) {
+    for (var i = 0; i < users.length; i++) {
         if (users[i].userid > maxId) {
             maxId = users[i].userid;
         }
     }
     return maxId + 1;
 }
+
+function isUserUnique(username, email, users) {
+    return !users.some(user => user.username === username || user.email === email);
+}
+

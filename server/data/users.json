@@ -5,11 +5,11 @@
     "roles": "admin",
     "password": "123",
     "userid": 1
-  }
-  ,{
+  },
+  {
     "username": "susss",
     "email": "aaa@gmail.com",
-    "roles": "admin",
+    "roles": "groupadmin",
     "password": "123",
     "userid": 2,
     "groupid": [
@@ -20,12 +20,12 @@
   {
     "username": "user1",
     "email": "abc@gmail.com",
-    "roles": "groupadmin",
+    "roles": "user",
     "password": "123",
     "userid": 3,
     "groupid": [
-      1,2
+      1,
+      2
     ]
   }
-  
 ]

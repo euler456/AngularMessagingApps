@@ -10,6 +10,7 @@ const httpOptions = {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
+
 export class ChatComponent implements OnInit {
   messagecontent: string = "";
   messages: { content: string; sender: string }[] = [];
@@ -25,37 +26,44 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     this.initIoConnection();
     this.selectedGroupId = sessionStorage.getItem('selectedGroupId'); // Get groupId from session
+  
+    // Retrieve the username from session storage
     if (this.selectedGroupId) {
       this.fetchUsersAndChannelsData(this.selectedGroupId); // Fetch data based on groupId
     }
   }
+  
 
   private initIoConnection() {
     this.socketService.initSocket();
     this.socketService.onMessage()
       .subscribe((message: string) => {
-        // When a message is received, add it to the messages array with a dummy sender
-        // You can modify the sender logic if needed
-        this.messages.push({ content: message, sender: "SenderName" });
+        // Retrieve the username from session storage
+        const username = sessionStorage.getItem('username');
+  
+        // When a message is received, add it to the messages array with the username
+        this.messages.push({ content: message, sender: username || "Anonymous" });
       });
   }
+  
 
   public chat() {
     if (this.messagecontent) {
       this.socketService.send(this.messagecontent);
+      // Store the username in session storage (you can replace 'yourUsername' with the actual username)  
       this.messagecontent = "";
     } else {
       console.log("no message");
     }
   }
+  
 
+  
   // Fetch users and channels data based on groupId
-  private fetchUsersAndChannelsData(groupId: string) {
-    // Replace with your backend API endpoint to fetch users and channels based on groupId
-    const backendApiUrl = `http://your-backend-api-url/groups/${groupId}`;
-
-    this.httpClient.get<any>(backendApiUrl).subscribe(
-      (data) => {
+private fetchUsersAndChannelsData(groupId: string) {
+    const requestPayload = { groupId: groupId };
+    this.httpClient.post<any>(BACKEND_URL + '/chat', requestPayload, httpOptions).subscribe(
+      (data: any) => {
         // Update usersList and channelsList with the fetched data
         this.usersList = data.users;
         this.channelsList = data.channels;
@@ -66,4 +74,5 @@ export class ChatComponent implements OnInit {
       }
     );
   }
+
 }

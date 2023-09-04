@@ -21,6 +21,7 @@
         <td>
           <button class="btn btn-primary" (click)="changeUserRole(user.userid, 'groupadmin')">Make Group Admin</button>
           <button class="btn btn-primary" (click)="changeUserRole(user.userid, 'admin')">Make Superadmin</button>
+          <button class="btn btn-primary" (click)="changeUserRole(user.userid, 'user')">Make User</button>
           <button class="btn btn-danger" (click)="deleteUser(user.userid)">Delete User</button>
         </td>
       </tr>
