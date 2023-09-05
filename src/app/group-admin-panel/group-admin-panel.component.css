@@ -1,0 +1,156 @@
+/* Styles for the Group Creation section */
+.group-creation {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.group-creation h3 {
+    font-size: 20px;
+}
+
+.group-creation form {
+    margin-top: 10px;
+}
+
+.group-creation input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.group-creation button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Styles for the Channel Creation section */
+.channel-creation {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.channel-creation h3 {
+    font-size: 20px;
+}
+
+.channel-creation select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.channel-creation input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.channel-creation button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Styles for the Group List section */
+.group-list {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.group-list h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+
+
+.group-list select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.group-list button {
+    padding: 10px 20px;
+    color: #292525;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px; 
+}
+
+/* Styles for the Channel List section */
+.channel-list {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.channel-list h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+
+
+.channel-list button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 5px; 
+
+}
+
+.remove-button {
+    background-color: red; /* Make the button red */
+    color: white; /* White text color for contrast */
+    font-size: 14px; /* Reduce button font size */
+    padding: 6px 12px; /* Adjust padding for smaller button */
+}
+
+/* Add right alignment to "Remove Channel" buttons */
+.right {
+    float: right;
+    margin-left: 10px; /* Add some spacing between buttons */
+}
+
+/* Add right alignment to buttons */
+.group-list button.right,
+.channel-list button.right {
+    float: right;
+    margin-left: 10px;
+    
+}
+/* Increase spacing for list items and their text */
+.group-list ul li,
+.channel-list ul li {
+    margin-bottom: 20px; /* Increase the margin at the bottom of each list item */
+    line-height: 1.5; /* Increase the line height for text within list items */
+}
+.channelli{
+    margin-bottom: 20px; 
+    line-height: 1.5;
+}

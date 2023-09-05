@@ -12,8 +12,12 @@
     "groupid": 2,
     "group": "ddd",
     "channels": [
-      "sssss",
       "aaaa"
     ]
+  },
+  {
+    "groupid": 4,
+    "group": "group6",
+    "channels": []
   }
 ]
