@@ -4,7 +4,8 @@
     "email": "admin@gmail.com",
     "roles": "admin",
     "password": "123",
-    "userid": 1
+    "userid": 1,
+    "groupid": []
   },
   {
     "username": "susss",
@@ -24,7 +25,34 @@
     "password": "123",
     "userid": 3,
     "groupid": [
-      1,
+      2
+    ]
+  },
+  {
+    "username": "user4",
+    "email": "user4@gmail.com",
+    "roles": "user",
+    "password": "123",
+    "userid": 4,
+    "groupid": [
+      1
+    ]
+  },
+  {
+    "username": "user5",
+    "email": "user5@gmail.com",
+    "roles": "user",
+    "password": "123",
+    "valid": true,
+    "userid": 5
+  },
+  {
+    "username": "user6",
+    "email": "user6@gmail.com",
+    "roles": "user",
+    "password": "123",
+    "userid": 6,
+    "groupid": [
       2
     ]
   }

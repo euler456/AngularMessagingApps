@@ -28,6 +28,7 @@ app.post('/login', require('./router/postLogin'));
 app.post('/loginafter', require('./router/postLoginafter'));
 app.post('/superadmin', require('./router/superadmin'));
 app.post('/chat', require('./router/chat'));
+app.post('/group', require('./router/group'));
 
 // Socket.io setup
 sockets.connect(io, PORT);

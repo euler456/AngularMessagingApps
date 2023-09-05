@@ -4,6 +4,7 @@
     <input
       type="text"
       [(ngModel)]="groupName"
+      name="groupName"
       placeholder="Group Name"
       required
     />
@@ -22,6 +23,7 @@
     <input
       type="text"
       [(ngModel)]="channelName"
+      name="channelName"
       placeholder="Channel Name"
       required
       [disabled]="selectedGroupId === null"
@@ -29,22 +31,20 @@
     <button type="submit" [disabled]="selectedGroupId === null">Create Channel</button>
   </form>
 </div>
-
 <div class="group-list">
   <h3>Groups</h3>
   <ul>
     <li *ngFor="let group of groups">
       {{ group.group }}
       <button (click)="removeGroup(group.groupid)">Remove Group</button>
-
       <!-- Add User to Group -->
-      <select [(ngModel)]="selectedUserId">
-        <option *ngFor="let user of users" [value]="user.userId">{{ user.username }}</option>
+      <select [(ngModel)]="group.selectedUserId">
+        <option *ngFor="let user of users" [value]="user.userid">{{ user.username }}</option>
       </select>
-      <button (click)="addUserToGroup(group.groupid)">Add User to Group</button>
+      <button (click)="addUserToGroup(group.groupid, group.selectedUserId)">Add User to Group</button>
 
       <!-- Remove User from Group -->
-      <button (click)="removeUserFromGroup(group.groupid)">Remove User from Group</button>
+      <button (click)="removeUserFromGroup(group.groupid, group.selectedUserId)">Remove User from Group</button>
     </li>
   </ul>
 </div>
