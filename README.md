@@ -18,10 +18,8 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
+## Github link
+https://github.com/euler456/3813week4.git
 ## Git
 I've created a repository named "3813week4" and linked it to my local computer. It's based on the workshop we covered in week 4. I'm using GitHub Desktop, which automatically displays any changes made by users. Users only need to provide a brief message when committing changes, and they can then push those changes to GitHub.
 

@@ -55,7 +55,10 @@ export class SuperadminComponent implements OnInit {
   // Method to change user role (for superadmin)
   changeUserRole(userId: string, newRole: string) {
     // Send request to the backend to change user role
-    const requestPayload = {action: 'changeUserRole', userId: userId, newRole: newRole };
+    const requestPayload = {
+      action: 'changeUserRole', 
+    userId: userId, 
+    newRole: newRole };
     this.httpClient.post(BACKEND_URL + '/superadmin', requestPayload, httpOptions).subscribe(
       () => {
         alert('User role changed successfully!');
