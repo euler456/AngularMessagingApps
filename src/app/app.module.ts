@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { AccountComponent } from './account/account.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -16,7 +15,6 @@ import { GroupAdminPanelComponent } from './group-admin-panel/group-admin-panel.
   declarations: [
     AppComponent,
     LoginComponent,
-    AccountComponent,
     ProfileComponent,
     DashboardComponent,
     ChatComponent,
