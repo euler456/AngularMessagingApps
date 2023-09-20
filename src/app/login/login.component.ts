@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
           sessionStorage.setItem('username', data.user.username);
           sessionStorage.setItem('roles', data.user.roles); // Adjust this based on your server response   
           sessionStorage.setItem('emails', data.user.email); // Adjust this based on your server response                     
-          this.router.navigateByUrl('account');
+          this.router.navigateByUrl('dashboard');
         } else {
           console.log(data);
           alert('Sorry username or password is not valid');

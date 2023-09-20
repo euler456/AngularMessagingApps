@@ -8,7 +8,10 @@ const io = require('socket.io')(http, {
     methods: ["GET", "POST"],
   },
 });
-
+const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
+const url = 'mongodb://localhost:27017';
+const dbName = 'ChatDatabase';
 const bodyParser = require('body-parser');
 const path = require('path');
 const sockets = require('./socket.js');
@@ -28,7 +31,30 @@ app.post('/login', require('./router/postLogin'));
 app.post('/loginafter', require('./router/postLoginafter'));
 app.post('/superadmin', require('./router/superadmin'));
 app.post('/chat', require('./router/chat'));
-app.post('/group', require('./router/group'));
+app.post('/groupadmin', require('./router/groupadmin'));
+
+
+
+MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function(err, client) {
+  if (err) return console.log(err);
+
+  const db = client.db(dbName);
+
+  require('./router/api-add.js')(db, app);
+  require('./router/api-prodcount.js')(db, app);
+  require('./router/api-validid.js')(db, app);
+  require('./router/api-getlist.js')(db, app);
+  require('./router/api-getitem.js')(db, app, ObjectID);
+  require('./router/api-update.js')(db, app, ObjectID);
+  require('./router/api-deleteitem.js')(db, app, ObjectID);
+
+  http.listen(3000, () => {
+    console.log("Server is listening on port 3000");
+  });
+});
+
+
+
 
 // Socket.io setup
 sockets.connect(io, PORT);

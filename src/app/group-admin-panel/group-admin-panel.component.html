@@ -50,6 +50,7 @@
   <h3>Channels</h3>
   <ul>
     <li *ngFor="let group of groups">
+      <button class="remove-button right small-red" (click)="removeGroup(group.groupid)">Remove Group</button>
       <h4>{{ group.group }}</h4>
       <ul>
         <li class="channelli" *ngFor="let channel of group.channels">

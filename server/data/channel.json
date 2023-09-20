@@ -1,0 +1,24 @@
+[
+    {
+      "channelId": "aaaa",
+      "name": "Channel A",
+      "messages": [
+        {
+          "sender": "User1",
+          "content": "Hello, world!",
+          "timestamp": "2023-09-18T10:00:00Z"
+        },
+        {
+          "sender": "User2",
+          "content": "Hi there!",
+          "timestamp": "2023-09-18T10:05:00Z"
+        }
+      ]
+    },
+    {
+      "channelId": "testing",
+      "name": "Testing Channel",
+      "messages": []
+    }
+]
+  

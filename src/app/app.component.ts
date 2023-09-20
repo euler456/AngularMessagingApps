@@ -8,7 +8,16 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   constructor(private router: Router) {}
-  title = 'week4tut';
+
+  isLoggedIn() {
+    // Check if user is logged in (you may have your own logic for this)
+    return !!sessionStorage.getItem('roles');
+  }
+
+  getUserRole() {
+    return sessionStorage.getItem('roles');
+  }
+
   logout() {
     // Clear session storage
     sessionStorage.clear();

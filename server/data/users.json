@@ -35,7 +35,7 @@
   {
     "username": "user5",
     "email": "user5@gmail.com",
-    "roles": "user",
+    "roles": "groupadmin",
     "password": "123",
     "valid": true,
     "userid": 5,
@@ -58,13 +58,26 @@
     "email": "user7@gmail.com",
     "roles": "user",
     "password": "123",
-    "userid": 7
+    "userid": 7,
+    "groupid": []
   },
   {
     "username": "super",
     "email": "super",
     "roles": "admin",
     "password": "123",
-    "userid": 8
+    "userid": 8,
+    "groupid": [
+      1,
+      2,
+      4
+    ]
+  },
+  {
+    "username": "user8",
+    "email": "user8@gmailc.om",
+    "roles": "groupadmin",
+    "password": "123",
+    "userid": 9
   }
 ]

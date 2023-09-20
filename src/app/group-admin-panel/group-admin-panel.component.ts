@@ -32,7 +32,7 @@ export class GroupAdminPanelComponent implements OnInit {
     };
     // Fetch groups data from the Node.js server
     this.httpClient
-      .post(BACKEND_URL + '/group', requestPayload, httpOptions)
+      .post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions)
       .subscribe(
         (response: any) => {
           this.groups = response.groups;
@@ -66,7 +66,7 @@ export class GroupAdminPanelComponent implements OnInit {
     };
     console.log(this.groupName)
   
-    this.httpClient.post(BACKEND_URL + '/group', requestPayload, httpOptions).subscribe(
+    this.httpClient.post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions).subscribe(
       (response: any) => {
         if (response.success) {
           // Group created successfully, refresh the list of groups
@@ -101,7 +101,7 @@ export class GroupAdminPanelComponent implements OnInit {
       };
   
       this.httpClient
-        .post(BACKEND_URL + '/group', requestPayload, httpOptions)
+        .post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions)
         .subscribe((response: any) => {
           if (response.success) {
             this.refreshGroups();
@@ -119,10 +119,11 @@ export class GroupAdminPanelComponent implements OnInit {
       };
       console.log(selectedUserId)
       this.httpClient
-        .post(BACKEND_URL + '/group', requestPayload, httpOptions)
+        .post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions)
         .subscribe((response: any) => {
           if (response.success) {
             // User joined the group successfully, handle the response if needed
+            alert("User successfully joined")
           } else {
             // Handle any error cases here
             console.error('Failed to join the group:', response.message);
@@ -142,10 +143,10 @@ export class GroupAdminPanelComponent implements OnInit {
         groupId,
       };
       this.httpClient
-        .post(BACKEND_URL + '/group', requestPayload, httpOptions)
+        .post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions)
         .subscribe((response: any) => {
           if (response.success) {
-            // User left the group successfully, handle the response if needed
+            alert("User successfully removed")
           } else {
             // Handle any error cases here
             console.error('Failed to leave the group:', response.message);
@@ -160,7 +161,7 @@ export class GroupAdminPanelComponent implements OnInit {
       action: 'deleteGroup',
       groupId: groupId
     };  
-    this.httpClient.post(BACKEND_URL + '/group', requestPayload, httpOptions).subscribe(
+    this.httpClient.post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions).subscribe(
     (response: any) => {
       if (response.success) {
         // Group deleted successfully, refresh the list of groups
@@ -175,7 +176,7 @@ export class GroupAdminPanelComponent implements OnInit {
       groupId: groupId,
       channelName:channelName
     };  
-    this.httpClient.post(BACKEND_URL + '/group', requestPayload, httpOptions).subscribe(
+    this.httpClient.post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions).subscribe(
       (response: any) => {
         if (response.success) {
           // Channel deleted successfully, refresh the list of channels
@@ -190,7 +191,7 @@ export class GroupAdminPanelComponent implements OnInit {
       action: 'listGroups' 
     };
     // Fetch groups data from the Node.js server
-    this.httpClient.post(BACKEND_URL + '/group', requestPayload, httpOptions).subscribe((
+    this.httpClient.post(BACKEND_URL + '/groupadmin', requestPayload, httpOptions).subscribe((
       data: any) => {
       this.groups = data.groups;
     });

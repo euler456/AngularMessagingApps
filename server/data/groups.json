@@ -1,14 +1,5 @@
 [
   {
-    "groupid": 1,
-    "group": "Awesome Team 1",
-    "channels": [
-      "sa",
-      "hhhh",
-      "hsada"
-    ]
-  },
-  {
     "groupid": 2,
     "group": "ddd",
     "channels": [
@@ -16,8 +7,15 @@
     ]
   },
   {
-    "groupid": 4,
-    "group": "group6",
+    "groupid": 6,
+    "group": "group7",
+    "channels": [
+      "testibg"
+    ]
+  },
+  {
+    "groupid": 7,
+    "group": "Group1",
     "channels": []
   }
 ]

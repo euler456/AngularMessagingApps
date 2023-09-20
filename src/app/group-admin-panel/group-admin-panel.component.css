@@ -127,8 +127,8 @@
 .remove-button {
     background-color: red; /* Make the button red */
     color: white; /* White text color for contrast */
-    font-size: 14px; /* Reduce button font size */
-    padding: 6px 12px; /* Adjust padding for smaller button */
+    font-size: 10px; /* Reduce button font size */
+    padding: 5px 12px; /* Adjust padding for smaller button */
 }
 
 /* Add right alignment to "Remove Channel" buttons */
