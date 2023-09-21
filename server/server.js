@@ -10,8 +10,7 @@ const io = require('socket.io')(http, {
 });
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
-const url = 'mongodb://localhost:27017';
-const dbName = 'ChatDatabase';
+const url = "mongodb://127.0.0.1:27017/";
 const bodyParser = require('body-parser');
 const path = require('path');
 const sockets = require('./socket.js');
@@ -22,39 +21,26 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// Serve static files from the dist directory (assuming your Angular app is built there)
 app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
+const dbName = 'ChatDatabase';
+console.log("Request received in server.js");
 
-// Define your REST API routes
-app.post('/login', require('./router/postLogin'));
-app.post('/loginafter', require('./router/postLoginafter'));
-app.post('/superadmin', require('./router/superadmin'));
-app.post('/chat', require('./router/chat'));
-app.post('/groupadmin', require('./router/groupadmin'));
+MongoClient.connect(url, function(err, client) {
+  console.log("Request received in server.js");
 
-
-
-MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, function(err, client) {
   if (err) return console.log(err);
-
   const db = client.db(dbName);
+  require('./router/api-add.js')(db);
+  // Define your REST API routes
+  console.log("Request received in server.js");
 
-  require('./router/api-add.js')(db, app);
-  require('./router/api-prodcount.js')(db, app);
-  require('./router/api-validid.js')(db, app);
-  require('./router/api-getlist.js')(db, app);
-  require('./router/api-getitem.js')(db, app, ObjectID);
-  require('./router/api-update.js')(db, app, ObjectID);
-  require('./router/api-deleteitem.js')(db, app, ObjectID);
-
-  http.listen(3000, () => {
-    console.log("Server is listening on port 3000");
-  });
+  app.post('/login', require('./router/postLogin.js')(db, app));
+  // app.post('/loginafter', require('./router/postLoginafter'));
+  // app.post('/superadmin', require('./router/superadmin'));
+  // app.post('/chat', require('./router/chat'));
+  // app.post('/groupadmin', require('./router/groupadmin'));
+  require('./listen.js')(http);
 });
-
-
-
 
 // Socket.io setup
 sockets.connect(io, PORT);

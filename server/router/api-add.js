@@ -1,5 +1,5 @@
 module.exports = function (db, app) {
-    app.post('/api/add', function(req, res) {
+    app.post('/superadmin', function(req, res) {
       if (!req.body) {
         return res.sendStatus(400);
       }

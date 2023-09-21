@@ -1,25 +1,28 @@
-var fs = require('fs');
+module.exports = function(db, app) {
+    app.post('/login', function(req, res) {
+        if (!req.body) {
+            return res.sendStatus(400);
+          }
+        const u = req.body.email;
+        const p = req.body.pwd;
+        console.log("Request received in login.js");
 
-module.exports = function(req, res) {
-    var u = req.body.email;
-    var p = req.body.pwd;
-    fs.readFile('./data/users.json', 'utf8', function(err, data) {
-        if (err) throw err;
-        let userArray = JSON.parse(data);
-        let user = userArray.find(user => user.email === u && user.password === p);
-        if (user) {
-            res.send({
-                valid: true,
-                user: {
-                    userid: user.userid,
-                    username: user.username,
-                    roles: user.roles,
-                    groups: user.groups,
-                    email: user.email
-                }
-            });
-        } else {
-            res.send({ valid: false });
-        }
+        db.collection('users').findOne({ email: u, password: p }, function(err, user) {
+            if (err) throw err;
+            if (user) {
+                res.send({
+                    valid: true,
+                    user: {
+                        userid: user.userid,
+                        username: user.username,
+                        roles: user.roles,
+                        groups: user.groups,
+                        email: user.email
+                    }
+                });
+            } else {
+                res.send({ valid: false });
+            }
+        });
     });
 };
