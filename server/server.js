@@ -8,7 +8,7 @@ const io = require('socket.io')(http, {
     methods: ["GET", "POST"],
   },
 });
-const MongoClient = require('mongodb').MongoClient;
+
 const ObjectID = require('mongodb').ObjectID;
 const url = "mongodb://127.0.0.1:27017/";
 const bodyParser = require('body-parser');
@@ -16,39 +16,28 @@ const path = require('path');
 const sockets = require('./socket.js');
 const server = require('./listen.js');
 const PORT = 3000;
+const dbName = 'ChatDatabase';
 
+const {MongoClient} = require('mongodb'),
+client = new MongoClient('mongodb://127.0.0.1:27017/');
+
+const db = client.db(dbName);
 // Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
-const dbName = 'ChatDatabase';
-console.log("Request received in server.js");
 
-MongoClient.connect(url, function(err, client) {
-  console.log("Request received in server.js");
-
-  if (err) return console.log(err);
-  const db = client.db(dbName);
-  require('./router/api-add.js')(db);
+  // require('./router/api-add.js')(db);
   // Define your REST API routes
-  console.log("Request received in server.js");
-
-  app.post('/login', require('./router/postLogin.js')(db, app));
+  require('./router/postLogin.js')(db, app, client);
   // app.post('/loginafter', require('./router/postLoginafter'));
   // app.post('/superadmin', require('./router/superadmin'));
   // app.post('/chat', require('./router/chat'));
   // app.post('/groupadmin', require('./router/groupadmin'));
-  require('./listen.js')(http);
-});
+  require('./listen.js')(http,PORT);
 
 // Socket.io setup
 sockets.connect(io, PORT);
 
 // Start the Express server
-server.listen(http, PORT, () => {
-  const d = new Date();
-  const n = d.getHours();
-  const m = d.getMinutes();
-  console.log(`Server has been started at: ${n}:${m}`);
-});

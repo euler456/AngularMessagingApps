@@ -1,14 +1,15 @@
-module.exports = function(db, app) {
-    app.post('/login', function(req, res) {
+
+module.exports = function(db, app, client ) {
+    app.post('/login', async function(req, res) {
+        await client.connect();
         if (!req.body) {
             return res.sendStatus(400);
           }
         const u = req.body.email;
         const p = req.body.pwd;
-        console.log("Request received in login.js");
-
-        db.collection('users').findOne({ email: u, password: p }, function(err, user) {
-            if (err) throw err;
+        console.log(u,p);
+        let user = await db.collection('users').findOne({ email: u, password: p })
+        console.log(user);
             if (user) {
                 res.send({
                     valid: true,
@@ -23,6 +24,9 @@ module.exports = function(db, app) {
             } else {
                 res.send({ valid: false });
             }
-        });
+
+        client.close();
+
+        
     });
 };
