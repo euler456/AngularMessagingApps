@@ -28,13 +28,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
 
-  // require('./router/api-add.js')(db);
   // Define your REST API routes
   require('./router/postLogin.js')(db, app, client);
-  // app.post('/loginafter', require('./router/postLoginafter'));
-  // app.post('/superadmin', require('./router/superadmin'));
-  // app.post('/chat', require('./router/chat'));
-  // app.post('/groupadmin', require('./router/groupadmin'));
+  require('./router/postLoginafter')(db, app, client);
+  // require('./router/superadmin')(db, app, client);
+  // require('./router/chat')(db, app, client);
+  // require('./router/groupadmin')(db, app, client);
   require('./listen.js')(http,PORT);
 
 // Socket.io setup

@@ -1,48 +1,40 @@
-var fs = require('fs');
 
-module.exports = function (req, res) {
-    const userId = Number(req.body.userId); // Get the user ID from the request
+module.exports = function (db, app,client) {
+    app.post('/loginafter', async function (req, res) {
+        try {
+            // Connect to MongoDB
+            await client.connect();
 
-    // Read the user and group data
-    fs.readFile('./data/users.json', 'utf8', function (userErr, userData) {
-        if (userErr) {
-            console.error(userErr);
-            res.status(500).json({ error: 'Error reading user data' });
-            return;
-        }
+            const userId = Number(req.body.userId);
 
-        fs.readFile('./data/groups.json', 'utf8', function (groupErr, groupData) {
-            if (groupErr) {
-                console.error(groupErr);
-                res.status(500).json({ error: 'Error reading groups data' });
+            // Get a reference to the database
+            // Get references to the user and group collections
+            const usersCollection = db.collection('users');
+            const groupsCollection = db.collection('groups');
+
+            // Find the user by their userId
+            const user = await usersCollection.findOne({ userid: userId });
+
+            if (!user) {
+                res.status(404).json({ error: 'User not found' });
                 return;
             }
 
-            try {
-                const users = JSON.parse(userData);
-                const groups = JSON.parse(groupData);
+            // Extract group IDs from the user data
+            const groupIds = user.groupid || [];
 
-                // Find the user by their userid
-                const user = users.find(user => user.userid === userId);
-                console.log(user)
-                if (!user) {
-                    res.status(404).json({ error: 'User not found' });
-                    return;
-                }
+            // Find the corresponding group names using groupIds
+            const userGroups = await groupsCollection
+                .find({ groupid: { $in: groupIds } })
+                .toArray();
 
-                // Extract group IDs from the user data
-                const groupIds = user.groupid || [];
-                // Find the corresponding group names using groupIds
-                const userGroups = groupIds.map(groupId => {
-                    const group = groups.find(group => group.groupid === groupId);
-                    return group ? { groupid: group.groupid, group: group.group } : null;
-                }).filter(Boolean);
-                console.log(userGroups)
-                res.json(userGroups);
-            } catch (parseError) {
-                console.error(parseError);
-                res.status(500).json({ error: 'Error parsing data' });
-            }
-        });
+            res.json(userGroups);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Server error' });
+        } finally {
+            // Close the MongoDB connection
+            await client.close();
+        }
     });
 };
