@@ -31,9 +31,9 @@ app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
   // Define your REST API routes
   require('./router/postLogin.js')(db, app, client);
   require('./router/postLoginafter')(db, app, client);
-  // require('./router/superadmin')(db, app, client);
-  // require('./router/chat')(db, app, client);
-  // require('./router/groupadmin')(db, app, client);
+  require('./router/superadmin')(db, app, client);
+  require('./router/chat')(db, app, client);
+  require('./router/groupadmin')(db, app, client);
   require('./listen.js')(http,PORT);
 
 // Socket.io setup

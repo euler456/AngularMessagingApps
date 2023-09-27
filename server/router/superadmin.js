@@ -1,75 +1,60 @@
-var fs = require('fs');
-
-module.exports = function (req, res) {
-    var action = req.body.action;
-    var users = readUsersFile();
-
-    if (action === 'listUsers' || action === 'fetchUsers') {
+module.exports = function (db, app, client) {
+    app.post('/superadmin', async function (req, res) {
+      await client.connect();
+      if (!req.body) {
+        return res.sendStatus(400);
+      }
+      const action = req.body.action;
+  
+      if (action === 'listUsers' || action === 'fetchUsers') {
         // Return the list of users
+        const users = await db.collection('users').find().toArray();
         res.send({ users: users });
-    } else if (action === 'createUser') {
+      } else if (action === 'createUser') {
         // Create a new user
-        var newUser = req.body.user;
-        if (!isUserUnique(newUser.username, newUser.email, users)) {
-            res.send({ success: false, message: 'Username or email already exists.' });
+        const newUser = req.body.user;
+        if (!await isUserUnique(newUser.username, newUser.email, db)) {
+          res.send({ success: false, message: 'Username or email already exists.' });
         } else {
-            newUser.userid = generateUserId(users);
-            users.push(newUser);
-            writeUsersFile(users);
+          const result = await db.collection('users').insertOne(newUser);
+          if (result.insertedId) {
             res.send({ success: true });
-        }        
-    } else if (action === 'deleteUser') {
+          } else {
+            res.send({ success: false, message: 'Failed to create a new user.' });
+          }
+        }
+      } else if (action === 'deleteUser') {
         // Delete a user
-        var userId = Number(req.body.userId); // Convert userId to a number
-        console.log(userId);
-        users = users.filter(user => user.userid !== userId);
-        writeUsersFile(users);
-        res.send({ success: true });
-    } else if (action === 'changeUserRole') {
-        // Change user role (superadmin, groupadmin, user)
-        var userId = Number(req.body.userId);
-        var newRole = req.body.newRole;
-        console.log(newRole)
-        var user = users.find(user => user.userid === userId);
-        if (user) {
-            user.roles = newRole;
-            writeUsersFile(users);
-            res.send({ success: true });
+        const userId = Number(req.body.userId);
+        const result = await db.collection('users').deleteOne({ _id: userId });
+        if (result.deletedCount === 1) {
+          res.send({ success: true });
         } else {
-            res.send({ success: false });
+          res.send({ success: false, message: 'User not found.' });
         }
-    }
-};
-
-function readUsersFile() {
-    try {
-        var data = fs.readFileSync('./data/users.json', 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        console.error('Error reading users file:', err);
-        return [];
-    }
-}
-
-function writeUsersFile(users) {
-    try {
-        fs.writeFileSync('./data/users.json', JSON.stringify(users, null, 2), 'utf8');
-    } catch (err) {
-        console.error('Error writing users file:', err);
-    }
-}
-
-function generateUserId(users) {
-    var maxId = 0;
-    for (var i = 0; i < users.length; i++) {
-        if (users[i].userid > maxId) {
-            maxId = users[i].userid;
+      } else if (action === 'changeUserRole') {
+        // Change user role (superadmin, groupadmin, user)
+        const userId = Number(req.body.userId);
+        const newRole = req.body.newRole;
+        const result = await db.collection('users').updateOne(
+          { _id: userId },
+          { $set: { roles: newRole } }
+        );
+  
+        if (result.modifiedCount === 1) {
+          res.send({ success: true });
+        } else {
+          res.send({ success: false });
         }
-    }
-    return maxId + 1;
-}
-
-function isUserUnique(username, email, users) {
-    return !users.some(user => user.username === username || user.email === email);
-}
-
+      }
+      // Add more actions as needed.
+  
+      client.close();
+    });
+  };
+  
+  async function isUserUnique(username, email, db) {
+    const existingUser = await db.collection('users').findOne({ $or: [{ username: username }, { email: email }] });
+    return !existingUser;
+  }
+  
