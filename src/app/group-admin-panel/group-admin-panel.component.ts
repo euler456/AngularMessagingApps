@@ -44,7 +44,7 @@ export class GroupAdminPanelComponent implements OnInit {
       );
 
     const requestUser = {
-      action: 'listUsers',
+      action: 'fetchUsers',
     };
     this.httpClient
       .post(BACKEND_URL + '/superadmin', requestUser, httpOptions)

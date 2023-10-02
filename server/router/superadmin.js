@@ -5,14 +5,20 @@ module.exports = function (db, app, client) {
         return res.sendStatus(400);
       }
       const action = req.body.action;
-  
-      if (action === 'listUsers' || action === 'fetchUsers') {
+      if (action === 'fetchUsers') {
         // Return the list of users
         const users = await db.collection('users').find().toArray();
         res.send({ users: users });
       } else if (action === 'createUser') {
         // Create a new user
         const newUser = req.body.user;
+        const latestUser = await db.collection('users').find().sort({ userid: -1 }).limit(1).toArray();
+        let latestUserId = 0;
+        if (latestUser.length > 0) {
+          latestUserId = latestUser[0].userid;
+        }
+        // Increment the latest user ID
+        newUser.userid = latestUserId + 1;
         if (!await isUserUnique(newUser.username, newUser.email, db)) {
           res.send({ success: false, message: 'Username or email already exists.' });
         } else {
@@ -26,7 +32,7 @@ module.exports = function (db, app, client) {
       } else if (action === 'deleteUser') {
         // Delete a user
         const userId = Number(req.body.userId);
-        const result = await db.collection('users').deleteOne({ _id: userId });
+        const result = await db.collection('users').deleteOne({ userid: userId });
         if (result.deletedCount === 1) {
           res.send({ success: true });
         } else {
@@ -37,7 +43,7 @@ module.exports = function (db, app, client) {
         const userId = Number(req.body.userId);
         const newRole = req.body.newRole;
         const result = await db.collection('users').updateOne(
-          { _id: userId },
+          { userid: userId },
           { $set: { roles: newRole } }
         );
   

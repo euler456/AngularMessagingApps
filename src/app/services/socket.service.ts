@@ -20,7 +20,7 @@ export class SocketService {
     };
   }
 
-  send(message: string) {
+  send(message: any) {
     this.socket.emit('message', message);
   }
 

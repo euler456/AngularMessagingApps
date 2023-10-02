@@ -39,7 +39,7 @@
     <h3>Channels:</h3>
     <ul>
       <!-- Replace with a loop over the list of channels -->
-      <li *ngFor="let channel of channelsList">{{ channel }}</li>
+      <li *ngFor="let channel of channelsList" (click)="loadChannelContent(channel)">{{ channel }}</li>
     </ul>
   </div>
 </div>

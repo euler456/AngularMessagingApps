@@ -17,6 +17,7 @@ export class ChatComponent implements OnInit {
   usersList: any[] = [];
   channelsList: any[] = [];
   selectedGroupId: string | null = null; // To store the selected groupId
+  channelMessageHistory: { [channelName: string]: { content: string; sender: string }[] } = {};
 
   constructor(
     private socketService: SocketService,
@@ -36,31 +37,49 @@ export class ChatComponent implements OnInit {
 
   private initIoConnection() {
     this.socketService.initSocket();
-    this.socketService.onMessage()
-      .subscribe((message: string) => {
-        // Retrieve the username from session storage
-        const username = sessionStorage.getItem('username');
-  
-        // When a message is received, add it to the messages array with the username
-        this.messages.push({ content: message, sender: username || "Anonymous" });
+    this.socketService.onMessage().subscribe((message: string) => {
+      const username = sessionStorage.getItem('username');
+      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default'; // Use 'default' channel if no channel is selected
+
+      if (!this.channelMessageHistory[selectedChannel]) {
+        this.channelMessageHistory[selectedChannel] = [];
+      }
+
+      this.channelMessageHistory[selectedChannel].push({
+        content: message,
+        sender: username || 'Anonymous',
       });
+
+      // Limit the message history to the latest 5 messages
+      if (this.channelMessageHistory[selectedChannel].length > 5) {
+        this.channelMessageHistory[selectedChannel].shift(); // Remove the oldest message
+      }
+
+      // Update messages array for the current channel
+      this.messages = this.channelMessageHistory[selectedChannel];
+    });
   }
-  
+
+  public loadChannelContent(channelName: string) {
+    sessionStorage.setItem('selectedChannel', channelName);
+
+    // Update messages array with the message history for the selected channel
+    this.messages = this.channelMessageHistory[channelName] || [];
+  }
 
   public chat() {
     if (this.messagecontent) {
+      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
       this.socketService.send(this.messagecontent);
-      // Store the username in session storage (you can replace 'yourUsername' with the actual username)  
-      this.messagecontent = "";
+      this.messagecontent = '';
     } else {
-      console.log("no message");
+      console.log('no message');
     }
   }
-  
 
   
   // Fetch users and channels data based on groupId
-private fetchUsersAndChannelsData(groupId: string) {
+  private fetchUsersAndChannelsData(groupId: string) {
     const requestPayload = { groupId: groupId };
     this.httpClient.post<any>(BACKEND_URL + '/chat', requestPayload, httpOptions).subscribe(
       (data: any) => {
@@ -74,5 +93,6 @@ private fetchUsersAndChannelsData(groupId: string) {
       }
     );
   }
+  
 
 }
