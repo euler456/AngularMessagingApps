@@ -1,29 +1,24 @@
 module.exports = {
   connect: function(io, PORT) {
     io.on('connection', (socket) => {
-      console.log('user connection on port' + PORT + ':' + socket.id);
-
-      socket.on('message', (data) => {
-        const messageData = JSON.parse(data);
-        io.emit('message', messageData.sender + ':' + messageData.content);
-      });
-
       socket.on('join', (channelName) => {
         socket.join(channelName);
-        const messageData = {
-          content: `A user has joined ${channelName}.`,
-          sender: 'System',
-        };
-        io.to(channelName).emit('message', JSON.stringify(messageData));
+        // Emit a message indicating that a user has joined the channel
+        const joinMessage = `${socket.id} has joined the channel.`;
+        io.to(channelName).emit('message', joinMessage);
       });
-
+      socket.on('message', (data) => {
+        const messageData = JSON.parse(data);
+        const channel = messageData.channel;
+        socket.join(channel);
+        console.log(channel);
+        io.to(channel).emit('message', messageData.content);
+      });
+      
       socket.on('leave', (channelName) => {
+        const leaveMessage = `${socket.id} has leaved the channel.`;
+        io.to(channelName).emit('message', leaveMessage);
         socket.leave(channelName);
-        const messageData = {
-          content: `A user has left ${channelName}.`,
-          sender: 'System',
-        };
-        io.to(channelName).emit('message', JSON.stringify(messageData));
       });
     });
   },

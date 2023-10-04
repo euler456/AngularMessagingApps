@@ -36,34 +36,17 @@ export class ChatComponent implements OnInit {
   }
   public joinChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
-    const joinMessage = `${username} has joined ${channelName}.`;
-
-    const messageData = {
-      content: joinMessage,
-      sender: 'System',
-    };
-
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
-    this.socketService.send(JSON.stringify(messageData));
-
+    this.socketService.joinChannel(JSON.stringify(channelName));
     if (selectedChannel !== channelName) {
       this.leaveChannel(selectedChannel);
     }
-
+  
     this.loadChannelContent(channelName);
   }
-
   public leaveChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
-    const leaveMessage = `${username} has left ${channelName}.`;
-
-    const messageData = {
-      content: leaveMessage,
-      sender: 'System',
-    };
-
-    this.socketService.send(JSON.stringify(messageData));
-
+    this.socketService.leaveChannel(JSON.stringify(channelName));
     // Clear messages when leaving a channel
     this.messages = [];
     this.channelSelected = false;
@@ -93,25 +76,23 @@ export class ChatComponent implements OnInit {
     this.messages = this.channelMessageHistory[channelName] || [];
     this.channelSelected = true; // Set channelSelected to true
   }
-  
-
 
   public chat() {
     if (this.messagecontent) {
       const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
       const username = sessionStorage.getItem('username') || 'Anonymous';
+      console.log(selectedChannel);
       const messageData = {
         content: this.messagecontent,
         sender: username,
+        channel: selectedChannel, 
       };
-      this.socketService.send(JSON.stringify(messageData));
+      this.socketService.send(JSON.stringify(messageData));      
       this.messagecontent = '';
     } else {
       console.log('no message');
     }
   }
-  
-
   
   // Fetch users and channels data based on groupId
   private fetchUsersAndChannelsData(groupId: string) {
