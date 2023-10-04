@@ -20,8 +20,15 @@ export class SocketService {
     };
   }
 
-  send(message: any) {
+  send(message: string) {
     this.socket.emit('message', message);
+  }
+  joinChannel(channelName: string) {
+    this.socket.emit('join', channelName);
+  }
+
+  leaveChannel(channelName: string) {
+    this.socket.emit('leave', channelName);
   }
 
   onMessage(): Observable<string> {

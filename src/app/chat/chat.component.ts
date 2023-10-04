@@ -18,7 +18,8 @@ export class ChatComponent implements OnInit {
   channelsList: any[] = [];
   selectedGroupId: string | null = null; // To store the selected groupId
   channelMessageHistory: { [channelName: string]: { content: string; sender: string }[] } = {};
-
+  selectedChannelName: string = "Default Channel"; // Initialize with a default value
+  channelSelected: boolean = false;
   constructor(
     private socketService: SocketService,
     private httpClient: HttpClient // Inject HttpClient
@@ -33,7 +34,40 @@ export class ChatComponent implements OnInit {
       this.fetchUsersAndChannelsData(this.selectedGroupId); // Fetch data based on groupId
     }
   }
-  
+  public joinChannel(channelName: string) {
+    const username = sessionStorage.getItem('username') || 'Anonymous';
+    const joinMessage = `${username} has joined ${channelName}.`;
+
+    const messageData = {
+      content: joinMessage,
+      sender: 'System',
+    };
+
+    const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
+    this.socketService.send(JSON.stringify(messageData));
+
+    if (selectedChannel !== channelName) {
+      this.leaveChannel(selectedChannel);
+    }
+
+    this.loadChannelContent(channelName);
+  }
+
+  public leaveChannel(channelName: string) {
+    const username = sessionStorage.getItem('username') || 'Anonymous';
+    const leaveMessage = `${username} has left ${channelName}.`;
+
+    const messageData = {
+      content: leaveMessage,
+      sender: 'System',
+    };
+
+    this.socketService.send(JSON.stringify(messageData));
+
+    // Clear messages when leaving a channel
+    this.messages = [];
+    this.channelSelected = false;
+  }
 
   private initIoConnection() {
     this.socketService.initSocket();
@@ -49,33 +83,34 @@ export class ChatComponent implements OnInit {
         content: message,
         sender: username || 'Anonymous',
       });
-
-      // Limit the message history to the latest 5 messages
-      if (this.channelMessageHistory[selectedChannel].length > 5) {
-        this.channelMessageHistory[selectedChannel].shift(); // Remove the oldest message
-      }
-
-      // Update messages array for the current channel
       this.messages = this.channelMessageHistory[selectedChannel];
     });
   }
 
   public loadChannelContent(channelName: string) {
+    this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
-
-    // Update messages array with the message history for the selected channel
     this.messages = this.channelMessageHistory[channelName] || [];
+    this.channelSelected = true; // Set channelSelected to true
   }
+  
+
 
   public chat() {
     if (this.messagecontent) {
       const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
-      this.socketService.send(this.messagecontent);
+      const username = sessionStorage.getItem('username') || 'Anonymous';
+      const messageData = {
+        content: this.messagecontent,
+        sender: username,
+      };
+      this.socketService.send(JSON.stringify(messageData));
       this.messagecontent = '';
     } else {
       console.log('no message');
     }
   }
+  
 
   
   // Fetch users and channels data based on groupId

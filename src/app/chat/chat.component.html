@@ -11,26 +11,34 @@
   <div class="chat-area">
     <!-- Chat header -->
     <div class="chat-header">
-      <h3>Channel Name</h3>
+      <h3>{{ selectedChannelName }}</h3>
+      <button (click)="joinChannel(selectedChannelName)">Join Channel</button>
+      <button (click)="leaveChannel(selectedChannelName)">Leave Channel</button>
       <!-- Add channel options or settings here -->
     </div>
 
     <!-- Chat messages -->
     <div class="chat-messages">
       <ng-container *ngFor="let m of messages">
-        <!-- Use div elements to display messages -->
-        <div *ngIf="m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
-          <span class="message-sender">{{ m.sender }}:</span> <!-- Add ":" here -->
+        <div *ngIf="m.content && m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
           <span class="message-content">{{ m.content }}</span>
         </div>
       </ng-container>
+        
     </div>
     
 
     <!-- Chat input -->
     <div class="chat-input">
-      <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control" placeholder="Type your message..." />
-      <button (click)="chat()" class="btn btn-primary">Send</button>
+      <input 
+      type="text" 
+      [(ngModel)]="messagecontent" 
+      name="messagecontent" 
+      id="messagecontent" 
+      class="form-control" 
+      placeholder="Type your message..." 
+      [disabled]="!channelSelected" />
+          <button (click)="chat()" class="btn btn-primary">Send</button>
     </div>
   </div>
   
