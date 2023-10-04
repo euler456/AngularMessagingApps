@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit {
   public joinChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
-    this.socketService.joinChannel(JSON.stringify(channelName));
+    this.socketService.joinChannel(channelName);
     if (selectedChannel !== channelName) {
       this.leaveChannel(selectedChannel);
     }
@@ -46,7 +46,7 @@ export class ChatComponent implements OnInit {
   }
   public leaveChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
-    this.socketService.leaveChannel(JSON.stringify(channelName));
+    this.socketService.leaveChannel(channelName);
     // Clear messages when leaving a channel
     this.messages = [];
     this.channelSelected = false;
@@ -56,12 +56,13 @@ export class ChatComponent implements OnInit {
     this.socketService.initSocket();
     this.socketService.onMessage().subscribe((message: string) => {
       const username = sessionStorage.getItem('username');
-      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default'; // Use 'default' channel if no channel is selected
-
+      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel'; 
+      console.log("Io", selectedChannel);
+  
       if (!this.channelMessageHistory[selectedChannel]) {
         this.channelMessageHistory[selectedChannel] = [];
       }
-
+  
       this.channelMessageHistory[selectedChannel].push({
         content: message,
         sender: username || 'Anonymous',
@@ -69,6 +70,8 @@ export class ChatComponent implements OnInit {
       this.messages = this.channelMessageHistory[selectedChannel];
     });
   }
+  
+  
 
   public loadChannelContent(channelName: string) {
     this.selectedChannelName = channelName;
@@ -79,13 +82,12 @@ export class ChatComponent implements OnInit {
 
   public chat() {
     if (this.messagecontent) {
-      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
+      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default'; 
       const username = sessionStorage.getItem('username') || 'Anonymous';
-      console.log(selectedChannel);
       const messageData = {
         content: this.messagecontent,
         sender: username,
-        channel: selectedChannel, 
+        channel: selectedChannel
       };
       this.socketService.send(JSON.stringify(messageData));      
       this.messagecontent = '';
