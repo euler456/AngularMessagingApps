@@ -22,6 +22,7 @@
       <ng-container *ngFor="let m of messages">
         <div *ngIf="m.content && m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
           <span class="message-content">{{ m.content }}</span>
+          <img *ngIf="m.content.startsWith('data:image')" [src]="m.content" alt="Image" />
         </div>
       </ng-container>
         

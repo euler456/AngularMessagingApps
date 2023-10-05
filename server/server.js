@@ -39,4 +39,3 @@ app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
 // Socket.io setup
 sockets.connect(io, PORT);
 
-// Start the Express server

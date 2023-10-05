@@ -18,7 +18,6 @@ module.exports = function (db, app, client) {
         const usersInGroup = await usersCollection.find({ groupid: groupId }).toArray();
 
         const usernames = usersInGroup.map(user => user.username);
-  
         res.json({
           group: group.group,
           channels: group.channels,

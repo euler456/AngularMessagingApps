@@ -82,8 +82,29 @@ export class ChatComponent implements OnInit {
   });
   }
   
-  
-
+  public onFileSelected(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const file = inputElement.files?.[0];
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = (e.target?.result as string);
+        this.sendImageToServer(base64); // Send image to server
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  private sendImageToServer(base64: string) {
+    const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default'; 
+    const username = sessionStorage.getItem('username') || 'Anonymous';
+    const messageData = {
+      content: base64, // Set the content to the base64 encoded image
+      sender: username,
+      channel: selectedChannel
+    };
+    this.socketService.sendImage(JSON.stringify(messageData)); // Assuming you have a method for sending images
+  }
   public loadChannelContent(channelName: string) {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
@@ -109,20 +130,7 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  public onFileSelected(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const file = inputElement.files?.[0];
-    
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64 = (e.target?.result as string).replace(/.*base64,/, '');
-        this.socketService.sendImage(base64); // Assuming you have a method for sending images
-      };
-      reader.readAsDataURL(file);
-    }
-  }
- 
+
   private fetchUsersAndChannelsData(groupId: string) {
     const requestPayload = { groupId: groupId };
     this.httpClient.post<any>(BACKEND_URL + '/chat', requestPayload, httpOptions).subscribe(

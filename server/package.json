@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "unitTest": "mocha ./unitTest/test.js",
+    "test": "mocha ./integrationTest/chat.test.js",
     "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "mocha": "^6.2.3",
+    "supertest": "^6.3.3"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",

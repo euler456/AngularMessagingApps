@@ -33,7 +33,7 @@ export class SocketService {
   sendImage(base64: string) {
     this.socket.emit('image', base64);
   }
-  
+
   onImageReceived(): Observable<string> {
     return new Observable(observer => {
       this.socket.on('image', (data: string) => {
@@ -49,6 +49,8 @@ export class SocketService {
       });
     });
   }
+
+  
   onLatestMessages(): Observable<any[]> {
     return new Observable(observer => {
       this.socket.on('latestMessages', (data: any[]) => {

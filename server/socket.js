@@ -1,6 +1,7 @@
 module.exports = {
   connect: function(io, PORT) {
     const latestMessages = {};
+    const fs = require('fs').promises;
 
     io.on('connection', (socket) => {
       socket.on('join', (data) => {
@@ -40,10 +41,13 @@ module.exports = {
         io.to(channel).emit('message', messageData.content);
         socket.emit('latestMessages', latestMessages[channel]);
       });
+
       socket.on('image', async image => {
+        console.log(image);
         const buffer = Buffer.from(image, 'base64');
-        await fs.writeFile('/tmp/image', buffer).catch(console.error); // fs.promises
-    });
+        await fs.writeFile('./data/image', buffer).catch(console.error);
+        io.emit('image', image);
+      });
       socket.on('leave', (data) => {
         const messageData = JSON.parse(data);
         const channel = messageData.channel;
