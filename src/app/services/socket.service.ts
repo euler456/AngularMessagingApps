@@ -23,14 +23,25 @@ export class SocketService {
   send(message: string) {
     this.socket.emit('message', message);
   }
-  joinChannel(channelName: string) {
-    this.socket.emit('join', channelName);
+  joinChannel(message: string) {
+    this.socket.emit('join', message);
+  }
+  leaveChannel(message: string) {
+    this.socket.emit('leave', message);
   }
 
-  leaveChannel(channelName: string) {
-    this.socket.emit('leave', channelName);
+  sendImage(base64: string) {
+    this.socket.emit('image', base64);
   }
-
+  
+  onImageReceived(): Observable<string> {
+    return new Observable(observer => {
+      this.socket.on('image', (data: string) => {
+        observer.next(data);
+      });
+    });
+  }
+  
   onMessage(): Observable<string> {
     return new Observable(observer => {
       this.socket.on('message', (data: string) => {
@@ -38,4 +49,12 @@ export class SocketService {
       });
     });
   }
+  onLatestMessages(): Observable<any[]> {
+    return new Observable(observer => {
+      this.socket.on('latestMessages', (data: any[]) => {
+        observer.next(data);
+      });
+    });
+  }
+  
 }

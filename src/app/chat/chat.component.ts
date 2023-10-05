@@ -37,17 +37,26 @@ export class ChatComponent implements OnInit {
   public joinChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
-    this.socketService.joinChannel(channelName);
+    const messageData = {
+      content: this.messagecontent,
+      sender: username,
+      channel: selectedChannel
+    };
+    this.socketService.joinChannel(JSON.stringify(messageData));     
     if (selectedChannel !== channelName) {
       this.leaveChannel(selectedChannel);
     }
-  
     this.loadChannelContent(channelName);
   }
   public leaveChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
-    this.socketService.leaveChannel(channelName);
-    // Clear messages when leaving a channel
+    const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
+    const messageData = {
+      content: this.messagecontent,
+      sender: username,
+      channel: selectedChannel
+    };
+    this.socketService.leaveChannel(JSON.stringify(messageData));    
     this.messages = [];
     this.channelSelected = false;
   }
@@ -58,7 +67,6 @@ export class ChatComponent implements OnInit {
       const username = sessionStorage.getItem('username');
       const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel'; 
       console.log("Io", selectedChannel);
-  
       if (!this.channelMessageHistory[selectedChannel]) {
         this.channelMessageHistory[selectedChannel] = [];
       }
@@ -69,6 +77,9 @@ export class ChatComponent implements OnInit {
       });
       this.messages = this.channelMessageHistory[selectedChannel];
     });
+    this.socketService.onLatestMessages().subscribe((latestMessages: any[]) => {
+    this.messages = latestMessages;
+  });
   }
   
   
@@ -76,7 +87,9 @@ export class ChatComponent implements OnInit {
   public loadChannelContent(channelName: string) {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
-    this.messages = this.channelMessageHistory[channelName] || [];
+    this.socketService.onLatestMessages().subscribe((latestMessages: any[]) => {
+      this.messages = latestMessages; 
+    });
     this.channelSelected = true; // Set channelSelected to true
   }
 
@@ -95,8 +108,21 @@ export class ChatComponent implements OnInit {
       console.log('no message');
     }
   }
-  
-  // Fetch users and channels data based on groupId
+
+  public onFileSelected(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const file = inputElement.files?.[0];
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = (e.target?.result as string).replace(/.*base64,/, '');
+        this.socketService.sendImage(base64); // Assuming you have a method for sending images
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+ 
   private fetchUsersAndChannelsData(groupId: string) {
     const requestPayload = { groupId: groupId };
     this.httpClient.post<any>(BACKEND_URL + '/chat', requestPayload, httpOptions).subscribe(

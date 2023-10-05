@@ -31,14 +31,18 @@
     <!-- Chat input -->
     <div class="chat-input">
       <input 
-      type="text" 
-      [(ngModel)]="messagecontent" 
-      name="messagecontent" 
-      id="messagecontent" 
-      class="form-control" 
-      placeholder="Type your message..." 
-      [disabled]="!channelSelected" />
-          <button (click)="chat()" class="btn btn-primary">Send</button>
+        type="text" 
+        [(ngModel)]="messagecontent" 
+        name="messagecontent" 
+        id="messagecontent" 
+        class="form-control" 
+        placeholder="Type your message..." 
+        [disabled]="!channelSelected" 
+      />
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)" [disabled]="!channelSelected"/>
+      <button (click)="chat()" class="btn btn-primary">Send</button>
     </div>
   </div>
   
