@@ -2,7 +2,6 @@ module.exports = function (db, app, client) {
     app.post('/chat', async function (req, res) {
       await client.connect();
       const groupId = Number(req.body.groupId); // Get the groupId from the frontend
-
       try {
         const groupsCollection = db.collection('groups');
 

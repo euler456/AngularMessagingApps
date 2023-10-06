@@ -10,7 +10,6 @@ module.exports = function (db, app, client) {
       const groups = await db.collection('groups').find().toArray();
       res.send({ groups: groups });
     } else if (action === 'createGroup') {
-
       const groupName = req.body.group;
       const newGroup = {
         group: groupName,
@@ -50,7 +49,7 @@ module.exports = function (db, app, client) {
     }
      else if (action === 'createChannel') {
       const groupId = Number(req.body.groupId);
-      const channelName = req.body.channelName;
+      const channelName = String(req.body.channelName);
 
       const result = await db.collection('groups').updateOne(
         { groupid: groupId },

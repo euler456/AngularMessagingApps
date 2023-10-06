@@ -26,7 +26,6 @@ module.exports = function(db, app, client ) {
             }
 
         client.close();
-
         
     });
 };

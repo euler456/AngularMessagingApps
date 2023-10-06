@@ -1,97 +1,83 @@
-const request = require('supertest');
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const sinon = require('sinon');
+const app = require('../server');
 const chai = require('chai');
-const assert = chai.assert;
-
-// Mocking the database and client
-const mockDb = {
-  collection: sinon.stub(),
-};
-
-const mockClient = {
-  connect: sinon.stub().resolves(),
-  close: sinon.stub().resolves(),
-};
-
-// Importing the route handler
-const routeHandler = require('../router/groupadmin.js')(mockDb, app, mockClient);
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
+const should = chai.should();
 
 describe('POST /groupadmin', function() {
-  it('should return success on creating a new group', async function() {
-    const req = {
-      body: {
-        action: 'createGroup',
-        group: 'Test Group',
-      },
-    };
-
-    const res = {
-      send: sinon.spy(),
-    };
-
-    // Mock the insertOne method of collections
-    const mockInsertOne = sinon.stub().resolves({
-      insertedId: 'someId',
-    });
-
-    const mockGroupsCollection = {
-      insertOne: mockInsertOne,
-    };
-
-    mockDb.collection.withArgs('groups').returns(mockGroupsCollection);
-
-    await routeHandler(req, res);
-
-    sinon.assert.calledWith(mockDb.collection, 'groups');
-    sinon.assert.calledWith(mockInsertOne, {
-      group: 'Test Group',
-      channels: [],
-      groupid: 1, // Assuming this is the next group ID
-    });
-
-    sinon.assert.calledWith(res.send, { success: true });
+  it('should create a new group', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'createGroup', group: 'Test Group' })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
   });
 
-  it('should return error when creating a group fails', async function() {
-    const req = {
-      body: {
-        action: 'createGroup',
-        group: 'Test Group',
-      },
-    };
-
-    const res = {
-      send: sinon.spy(),
-    };
-
-    // Mocking the insertOne method to simulate failure
-    const mockInsertOne = sinon.stub().resolves({
-      insertedId: null,
-    });
-
-    const mockGroupsCollection = {
-      insertOne: mockInsertOne,
-    };
-
-    mockDb.collection.withArgs('groups').returns(mockGroupsCollection);
-
-    await routeHandler(req, res);
-
-    sinon.assert.calledWith(mockDb.collection, 'groups');
-    sinon.assert.calledWith(mockInsertOne, {
-      group: 'Test Group',
-      channels: [],
-      groupid: 1, // Assuming this is the next group ID
-    });
-
-    sinon.assert.calledWith(res.send, { success: false, message: 'Failed to create a new group.' });
+  it('should delete an existing group', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'deleteGroup', groupId: 3 }) // Assuming groupId 1 exists
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
   });
 
-  // Add more test cases for other actions (listGroups, deleteGroup, etc.)
+  it('should create a new channel in a group', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'createChannel', groupId: 1, channelName: 'Test Channel' }) // Assuming groupId 1 exists
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
+  });
+
+  it('should delete a channel from a group', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'deleteChannel', groupId: 1, channelName: 'Test Channel' }) // Assuming groupId 1 and channel 'Test Channel' exist
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
+  });
+
+  it('should join a user to a group', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'joinGroup', userId: 4, groupId: 1 }) // Assuming userId 1 and groupId 1 exist
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
+  });
+
+  it('should leave a group for a user', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'leaveGroup', userId: 4, groupId: 1 }) // Assuming userId 1 and groupId 1 exist
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.have.property('success').eql(true);
+        done();
+      });
+  });
+
+  it('should handle invalid input error', (done) => {
+    chai.request(app)
+      .post('/groupadmin')
+      .send({ action: 'invalidAction' }) // Sending an invalid action to trigger an error
+      .end((err, res) => {
+        res.should.have.status(400); // Expecting a 400 Bad Request error
+        done();
+      });
+  });
 });
