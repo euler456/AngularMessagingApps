@@ -47,7 +47,7 @@ export class GroupAdminPanelComponent implements OnInit {
       action: 'fetchUsers',
     };
     this.httpClient
-      .post(BACKEND_URL + '/superadmin', requestUser, httpOptions)
+      .post(BACKEND_URL + '/groupadmin', requestUser, httpOptions)
       .subscribe(
         (response: any) => {
           this.users = response.users;

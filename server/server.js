@@ -27,6 +27,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '/../dist/week4tut')));
+app.use('/images',express.static(path.join(__dirname , './userimages')));
 
   // Define your REST API routes
   require('./router/postLogin.js')(db, app, client);

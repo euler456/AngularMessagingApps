@@ -30,8 +30,9 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchUserGroups(userId: string): void {
-    const requestPayload = { userId: userId };
-    // Send request to /loginafter endpoint
+    const requestPayload = { 
+      action: 'fetchinfo',
+      userId: userId };
     this.httpClient.post<any[]>(BACKEND_URL + '/loginafter', requestPayload, httpOptions).subscribe(
       (groups: any[]) => {
         console.log(groups);

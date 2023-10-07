@@ -2,11 +2,15 @@
 <form>
   <div class="form-outline mb-4">
     <label class="form-label" for="username">Username</label>
-    <input id="username" class="form-control" type="text" name="username" [(ngModel)]="userProfile.username">
+    <input id="username" class="form-control" type="text" name="username" [(ngModel)]="userProfile.username" required>
   </div>
   <div class="form-outline mb-4">
     <label class="form-label" for="email">Email</label>
-    <input id="email" class="form-control" type="email" name="emails" [(ngModel)]="userProfile.email">
+    <input id="email" class="form-control" type="email" name="email" [(ngModel)]="userProfile.email" required>
+  </div>
+  <div class="form-outline mb-4">
+    <label class="form-label" for="profileImage">Profile Image</label>
+    <input id="profileImage" class="form-control" type="file" (change)="onFileSelected($event)">
   </div>
   <button type="button" class="btn btn-primary btn-block mb-4" (click)="updateProfile()">Edit</button>
 </form>

@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   public loginfunc() {
-
     this.httpClient.post(BACKEND_URL + '/login',this.userpwd, httpOptions)
       .subscribe((data: any) => {
         alert(JSON.stringify(this.userpwd));

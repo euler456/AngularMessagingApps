@@ -5,11 +5,17 @@ module.exports = function (db, app, client) {
       return res.sendStatus(400);
     }
     const action = req.body.action;
-    if (action === 'listGroups') {
+    if (action === 'fetchUsers') {
+      // Return the list of users
+      const users = await db.collection('users').find().toArray();
+      res.send({ users: users });
+    }
+    else if (action === 'listGroups') {
       // Return the list of groups
       const groups = await db.collection('groups').find().toArray();
       res.send({ groups: groups });
-    } else if (action === 'createGroup') {
+    } 
+    else if (action === 'createGroup') {
       const groupName = req.body.group;
       const newGroup = {
         group: groupName,
