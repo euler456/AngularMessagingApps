@@ -16,7 +16,8 @@ module.exports = function(db, app, client ) {
                         username: user.username,
                         roles: user.roles,
                         groups: user.groups,
-                        email: user.email
+                        email: user.email,
+                        filename:user.filename
                     }
                 });
             } else {

@@ -17,8 +17,7 @@ const BACKEND_URL = 'http://localhost:3000';
 export class ProfileComponent implements OnInit {
   userProfile: any = {};
   selectedFile:any = null;
-  imagepath='';
-
+  imagepath = sessionStorage.getItem('filename');
   constructor(private router: Router, private httpClient: HttpClient,private imguploadService:ImguploadService) {}
 
   ngOnInit(): void {
@@ -52,14 +51,21 @@ export class ProfileComponent implements OnInit {
         }
       });
   }
-  
   uploadProfileImage() {
+    const userId = sessionStorage.getItem('userid');
     const fd = new FormData();
-    fd.append('image',this.selectedFile,this.selectedFile.name);
-    this.imguploadService.imgupload(fd).subscribe(res=>{  
-    this.imagepath = res.data.filename;
-    console.log(this.imagepath);
-  });
+    fd.append('image', this.selectedFile, this.selectedFile.name);
+    if (userId !== null) {
+      fd.append('userId', userId);
+      console.log(userId);
+    }
+    this.imguploadService.imgupload(fd).subscribe(res => {  
+      const filename = res.data.filename;
+      sessionStorage.setItem('filename', filename);
+      this.imagepath = filename;
+
+    });
   }
+  
   
 }

@@ -98,11 +98,13 @@ export class ChatComponent implements OnInit {
   private sendImageToServer(base64: string) {
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default'; 
     const username = sessionStorage.getItem('username') || 'Anonymous';
+    const filename = sessionStorage.getItem('filename') || 'Null';
     const messageData = {
       content: base64, // Set the content to the base64 encoded image
       sender: username,
       channel: selectedChannel
     };
+    alert('image sent');
     this.socketService.sendImage(JSON.stringify(messageData)); // Assuming you have a method for sending images
   }
   public loadChannelContent(channelName: string) {

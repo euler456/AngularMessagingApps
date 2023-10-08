@@ -36,9 +36,6 @@ module.exports = function (db, app, client) {
               email: user.email
             };
     
-            if (user.filename) {
-              responseData.filename = user.filename;
-            }
             res.send({
               valid: true,
               user: responseData

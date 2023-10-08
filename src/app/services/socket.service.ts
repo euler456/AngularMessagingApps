@@ -49,8 +49,6 @@ export class SocketService {
       });
     });
   }
-
-  
   onLatestMessages(): Observable<any[]> {
     return new Observable(observer => {
       this.socket.on('latestMessages', (data: any[]) => {

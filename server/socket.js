@@ -43,10 +43,15 @@ module.exports = {
       });
 
       socket.on('image', async image => {
-        console.log(image);
+        console.log("image sent");
+        const messageData = JSON.parse(image);
+        const channel = messageData.channel;
+        console.log(channel);
+        const sender = messageData.sender;
         const buffer = Buffer.from(image, 'base64');
-        await fs.writeFile('./data/image', buffer).catch(console.error);
-        io.emit('image', image);
+        io.to(channel).emit('message', image);
+        latestMessages[channel].push({ content: image, sender }); // Add join message to latest messages
+        socket.emit('latestMessages', latestMessages[channel]);
       });
       socket.on('leave', (data) => {
         const messageData = JSON.parse(data);
