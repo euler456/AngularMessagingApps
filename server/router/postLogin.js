@@ -7,9 +7,7 @@ module.exports = function(db, app, client ) {
           }
         const u = req.body.email;
         const p = req.body.pwd;
-        console.log(u,p);
         let user = await db.collection('users').findOne({ email: u, password: p })
-        console.log(user);
             if (user) {
                 res.send({
                     valid: true,
@@ -26,6 +24,6 @@ module.exports = function(db, app, client ) {
             }
 
         client.close();
-        
+
     });
 };

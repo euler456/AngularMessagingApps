@@ -8,9 +8,15 @@
     <label class="form-label" for="email">Email</label>
     <input id="email" class="form-control" type="email" name="email" [(ngModel)]="userProfile.email" required>
   </div>
-  <div class="form-outline mb-4">
+  <button type="button" class="btn btn-primary btn-block mb-4" (click)="updateProfile()">Edit</button>
+</form>
+<form>
+    <div class="form-outline mb-4">
     <label class="form-label" for="profileImage">Profile Image</label>
     <input id="profileImage" class="form-control" type="file" (change)="onFileSelected($event)">
   </div>
-  <button type="button" class="btn btn-primary btn-block mb-4" (click)="updateProfile()">Edit</button>
+  <button type="button" class="btn btn-primary btn-block mb-4" (click)="uploadProfileImage()">Edit</button>
+
+  <img src="http://localhost:3000\image\{{imagepath}} "/>
+
 </form>
