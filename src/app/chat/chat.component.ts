@@ -147,9 +147,20 @@ export class ChatComponent implements OnInit {
   public loadChannelContent(channelName: string) {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
-    this.socketService.onLatestMessages().subscribe((latestMessages: any[]) => {
-      this.textMessages = latestMessages.filter(msg => typeof msg.content === 'string');
-      this.imageMessages = latestMessages.filter(msg => typeof msg.content !== 'string' && msg.content instanceof HTMLImageElement);
+    this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
+      for (const msg of latestMessages) {
+        console.log(msg); // Add this line to see what msg contains
+        if (msg && msg.content && typeof msg.content === 'string' && msg.content.startsWith('{"content":"data:image/png;base64,')) {
+          try {
+            const base64String = await this.extractBase64(msg.content);
+            // Assuming you have an imageSource property
+            this.imageSource = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${base64String}`);
+          } catch (error) {
+            console.error('Error decoding image:', error);
+          }
+        }
+      }
+      this.textMessages = latestMessages.filter(msg => !msg.content.startsWith('{"content":"data:image/png;base64,'));
     });
     this.channelSelected = true;
   }
