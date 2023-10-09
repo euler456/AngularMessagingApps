@@ -18,11 +18,17 @@
     </div>
 
     <div class="chat-messages">
-      <img [src]="imageSource" alt="Image Source">
-      <ng-container *ngFor="let m of textMessages">
-        <div *ngIf="m.content && m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
-          <span class="message-content">{{ m.content }}</span>
-        </div>
+      <ng-container >
+        <div *ngFor="let m of textMessages" class="{{ m.sender === 'Me' ? 'my-message' : 'other-message' }}">
+          <span class="sender">{{ m.sender }}:</span>
+          <ng-container *ngIf="m.data === 'base64'">
+            <img [src]="decodeBase64(m)" alt="Image">
+          </ng-container>
+          <ng-container *ngIf="m.data !== 'base64'">
+            <span class="message-content">{{ m.content }}</span>
+          </ng-container>
+        </div>        
+        
       </ng-container>
     </div>
     

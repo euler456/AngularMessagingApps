@@ -17,8 +17,8 @@ const httpOptions = {
 export class ChatComponent implements OnInit {
   imageSource:any;
   messagecontent: string = "";
-  textMessages: { content: string; sender: string }[] = [];
-  imageMessages: { content: HTMLImageElement; sender: string }[] = [];
+  textMessages: { data:string; content: string; sender: string }[] = [];
+  imageMessages: { content: string; sender: string }[] = [];
   usersList: any[] = [];
   channelsList: any[] = [];
   selectedGroupId: string | null = null;
@@ -51,7 +51,6 @@ export class ChatComponent implements OnInit {
     if (selectedChannel !== channelName) {
       this.leaveChannel(selectedChannel);
     }
-    this.loadChannelContent(channelName);
   }
 
   public leaveChannel(channelName: string) {
@@ -68,56 +67,62 @@ export class ChatComponent implements OnInit {
     this.channelSelected = false;
   }
 
-
   private async initIoConnection() {
     this.socketService.initSocket();
     this.socketService.onMessage().subscribe(async (message: string) => {
-      const username = sessionStorage.getItem('username');
-      const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel'; 
-      if (message.startsWith('{"content":"data:image/png;base64,')) {
-        try {
-          const base64String = await this.extractBase64(message);
-          this.imageSource = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${base64String}`);
-        } catch (error) {
-          console.error('Error decoding image:', error);
-        }
-      } else {
-        this.textMessages.push({
-          content: message,
-          sender: username || 'Anonymous',
-        });
-      }      
-    });
-  
-    this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
-      for (const msg of latestMessages) {
-        console.log(msg); // Add this line to see what msg contains
-        if (msg && msg.content && typeof msg.content === 'string' && msg.content.startsWith('{"content":"data:image/png;base64,')) {
+      try {
+        const username = sessionStorage.getItem('username');
+        const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel'; 
+        if (message.startsWith('{"content":"data:image/png')) {
           try {
-            const base64String = await this.extractBase64(msg.content);
-            // Assuming you have an imageSource property
-            this.imageSource = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${base64String}`);
+            const base64String = await this.extractBase64(message);
+            
+            console.log(this.textMessages);
+
           } catch (error) {
             console.error('Error decoding image:', error);
           }
+        } else {
+          this.textMessages.push({
+            data: 'normal',
+            content: message,
+            sender: username || 'Anonymous',
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    });
+    this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
+      for (const msg of latestMessages) {
+        try {
+          if (msg && msg.content && typeof msg.content === 'string' && msg.content.startsWith('data:image/png;base64,')) {
+            const base64String = msg.content.split(',')[1];
+           
+          } else {
+            // Handle other types of messages if needed
+          }
+        } catch (error) {
+          console.error('Error processing message:', error);
         }
       }
     });
+    
   }
 
-  public onFileSelected(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    const file = inputElement.files?.[0];
+ public onFileSelected(event: Event) {
+  const inputElement = event.target as HTMLInputElement;
+  const file = inputElement.files?.[0];
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64 = (e.target?.result as string);
-        this.sendImageToServer(base64);
-      };
-      reader.readAsDataURL(file);
-    }
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = (e.target?.result as string);
+      this.sendImageToServer(base64);
+    };
+    reader.readAsDataURL(file);
   }
+}
   private extractBase64(jsonString: string): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
@@ -130,7 +135,16 @@ export class ChatComponent implements OnInit {
     });
   }
   
-  
+  decodeBase64(message: {  data: string,content: string }): string {
+    try {
+      const base64String = message.content;
+      console.log("success decode");
+      return `data:image/png;base64, ${base64String}`;
+    } catch (error) {
+      console.error('Error decoding image:', error);
+      return ''; // Return an empty string or a placeholder image URL if decoding fails
+    }
+  }  
 
   private sendImageToServer(base64: string) {
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
@@ -148,20 +162,26 @@ export class ChatComponent implements OnInit {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
     this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
+      console.log(latestMessages);
       for (const msg of latestMessages) {
-        console.log(msg); // Add this line to see what msg contains
-        if (msg && msg.content && typeof msg.content === 'string' && msg.content.startsWith('{"content":"data:image/png;base64,')) {
-          try {
-            const base64String = await this.extractBase64(msg.content);
-            // Assuming you have an imageSource property
-            this.imageSource = this.sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${base64String}`);
-          } catch (error) {
-            console.error('Error decoding image:', error);
+        try {
+          const content = msg.content;
+          if (content && content.startsWith('data:image/png;base64,')) {
+            const base64String = msg.content.split(',')[1];
+            this.textMessages.push({
+              data: 'base64',
+              content: String(base64String),
+              sender: msg.username || 'Anonymous'
+            });
+          } else {
+            // Handle other types of messages if needed
           }
+        } catch (error) {
+          console.error('Error processing message:', error);
         }
       }
-      this.textMessages = latestMessages.filter(msg => !msg.content.startsWith('{"content":"data:image/png;base64,'));
     });
+    
     this.channelSelected = true;
   }
 
