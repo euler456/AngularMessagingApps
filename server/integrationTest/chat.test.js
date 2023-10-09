@@ -8,7 +8,7 @@ describe('POST /chat', function() {
   it('should return group data with valid group ID', (done) => {
     chai.request(app)
       .post('/chat')
-      .send({ groupId: 1 }) // Example input: sending a groupId of 123
+      .send({ groupId: 1 }) 
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.be.a('object');

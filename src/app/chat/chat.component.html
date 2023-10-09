@@ -17,15 +17,13 @@
       <!-- Add channel options or settings here -->
     </div>
 
-    <!-- Chat messages -->
     <div class="chat-messages">
-      <ng-container *ngFor="let m of messages">
+      <img [src]="imageSource" alt="Image Source">
+      <ng-container *ngFor="let m of textMessages">
         <div *ngIf="m.content && m.content.trim() !== ''" [class]="m.sender === 'Me' ? 'my-message' : 'other-message'">
           <span class="message-content">{{ m.content }}</span>
-          <img *ngIf="m.content.startsWith('data:image')" [src]="m.content" alt="Image" />
         </div>
       </ng-container>
-        
     </div>
     
 
