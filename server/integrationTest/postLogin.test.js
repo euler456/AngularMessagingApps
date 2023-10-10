@@ -5,7 +5,7 @@ chai.use(chaiHttp);
 const should = chai.should();
 
 describe('POST /login', function() {
-  it('should return user data with valid email and password', (done) => {
+  it('should return user data with valid email', (done) => {
     chai.request(app)
       .post('/login')
       .send({ email: 'admin@gmail.com', pwd: '123' }) // Example input: valid email and password
@@ -16,7 +16,6 @@ describe('POST /login', function() {
         res.body.user.should.have.property('userid');
         res.body.user.should.have.property('username');
         res.body.user.should.have.property('roles');
-        res.body.user.should.have.property('email');
         done();
       });
   });

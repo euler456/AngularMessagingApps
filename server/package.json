@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test": "nyc mocha './integrationTest/**/*.js'",
     "unitTest": "mocha ./unitTest/test.js",
-    "test": "mocha ./integrationTest/chat.test.js",
+    "integrationTest": "mocha ./integrationTest/**/*.js",
     "start": "node server.js"
   },
+  
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "mocha": "^6.2.3",
+    "nyc": "^15.1.0",
     "supertest": "^6.3.3"
   },
   "dependencies": {

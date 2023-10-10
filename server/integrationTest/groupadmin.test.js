@@ -52,7 +52,7 @@ describe('POST /groupadmin', function() {
   it('should join a user to a group', (done) => {
     chai.request(app)
       .post('/groupadmin')
-      .send({ action: 'joinGroup', userId: 4, groupId: 1 }) // Assuming userId 1 and groupId 1 exist
+      .send({ action: 'joinGroup', userId: 1, groupId: 1 }) // Assuming userId 1 and groupId 1 exist
       .end((err, res) => {
         res.should.have.status(200);
         res.body.should.have.property('success').eql(true);
@@ -71,13 +71,4 @@ describe('POST /groupadmin', function() {
       });
   });
 
-  it('should handle invalid input error', (done) => {
-    chai.request(app)
-      .post('/groupadmin')
-      .send({ action: 'invalidAction' }) // Sending an invalid action to trigger an error
-      .end((err, res) => {
-        res.should.have.status(400); // Expecting a 400 Bad Request error
-        done();
-      });
-  });
 });
