@@ -21,7 +21,7 @@ describe('Socket Module', function() {
   describe('Join Channel', function() {
     it('should join a channel and emit a join message', (done) => {
       chai.request(app)
-        .post('/join')
+        .this.socket.emit('join', { channel: 'testChannel', sender: 'TestUser' })
         .send({ channel: 'testChannel', sender: 'TestUser' })
         .end((err, res) => {
           res.should.have.status(200);

@@ -1,29 +1,45 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { Router } from '@angular/router';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
-  }));
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+  let router: Router;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [RouterTestingModule],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+  });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'week4tut'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('week4tut');
+  it('should check if user is logged in', () => {
+    spyOn(sessionStorage, 'getItem').and.returnValue('someUserRole'); // Mocking session storage
+    const result = component.isLoggedIn();
+    expect(result).toBeTruthy();
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('week4tut app is running!');
+  it('should get user role', () => {
+    spyOn(sessionStorage, 'getItem').and.returnValue('someUserRole'); // Mocking session storage
+    const result = component.getUserRole();
+    expect(result).toBe('someUserRole');
+  });
+
+  it('should logout', () => {
+    spyOn(sessionStorage, 'clear'); // Mock sessionStorage clear method
+    spyOn(router, 'navigateByUrl'); // Mock router.navigateByUrl method
+    component.logout();
+    expect(sessionStorage.clear).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
   });
 });
