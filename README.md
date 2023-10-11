@@ -20,6 +20,7 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## Github link
 https://github.com/euler456/3813week4.git
+
 ## Git
 I've created a repository named "3813week4" and linked it to my local computer. It's based on the workshop we covered in week 4. I'm using GitHub Desktop, which automatically displays any changes made by users. Users only need to provide a brief message when committing changes, and they can then push those changes to GitHub.
 
@@ -28,17 +29,18 @@ I've also created a branch called "week5" to upload all the changes made after w
 Within the repository, there are two main folders. The first is "src," which contains all the Angular user interface components. The second is the "server" folder, which includes all the Node.js backend code. Notably, there's a folder called "data" under the server directory, where all the JSON files are stored.
 ## Data Structures
 User Data Structure:
-
 Attributes:
+
 username: The username of the user.
 email: The email address of the user.
 roles: The roles or permissions assigned to the user (e.g., "admin," "groupadmin," "user").
 password: The user's password (Note: In practice, passwords should be securely hashed and not stored as plaintext).
 userid: A unique identifier for the user.
 groupid: An array of group IDs that the user belongs to.
+filename: The filename associated with the user's profile image.
 Group Data Structure:
-
 Attributes:
+
 groupid: A unique identifier for the group.
 group: The name or title of the group.
 channels: An array of channel names associated with the group.
