@@ -20,7 +20,6 @@ import { GroupAdminPanelComponent } from './group-admin-panel/group-admin-panel.
     ChatComponent,
     SuperadminComponent,
     GroupAdminPanelComponent
-    
   ],
   imports: [
     BrowserModule,

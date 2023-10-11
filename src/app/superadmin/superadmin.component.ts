@@ -126,7 +126,6 @@ export class SuperadminComponent implements OnInit {
       },
       (error) => {
         console.error('Error deleting user:', error);
-        // Handle error here, e.g., show an error message to the superadmin
       }
     );
   }

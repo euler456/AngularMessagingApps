@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "es2020",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "strictPropertyInitialization": false,
+      "baseUrl": "./",
+      "paths": {
+        "@app/*": ["src/app/*"],
+        "@env/*": ["src/environments/*"]
+      },
+      "sourceMap": true,
+      "declaration": false,
+      "downlevelIteration": true,
+      "experimentalDecorators": true,
+      "moduleResolution": "node",
+      "importHelpers": true,
+      "target": "es6",
+      "lib": ["es2018", "dom"]
+    },
+    "angularCompilerOptions": {
+      "fullTemplateTypeCheck": true,
+      "strictInjectionParameters": true
+    }
+  }
+  

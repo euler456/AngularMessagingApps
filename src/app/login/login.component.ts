@@ -25,10 +25,9 @@ export class LoginComponent implements OnInit {
 
   public loginfunc() {
     this.httpClient.post(BACKEND_URL + '/login',this.userpwd, httpOptions)
-      .subscribe((data: any) => {
-        alert(JSON.stringify(this.userpwd));
-        
+      .subscribe((data: any) => {        
         if (data.valid == true) {
+          alert("successful login");
           sessionStorage.setItem('userid', `${data.user.userid}`);
           sessionStorage.setItem('username', data.user.username);
           sessionStorage.setItem('roles', data.user.roles); // Adjust this based on your server response   
@@ -39,6 +38,8 @@ export class LoginComponent implements OnInit {
           console.log("Request  in login.ts");
 
         } else {
+          alert("Username or Email incorrect");
+
           console.log(data);
         }
       });

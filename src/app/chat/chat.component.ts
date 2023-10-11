@@ -25,9 +25,9 @@ export class ChatComponent implements OnInit {
   selectedChannelName: string = "Default Channel";
   channelSelected: boolean = false;
   constructor(
-    private socketService: SocketService,
-    private httpClient: HttpClient,
-    private sanitizer: DomSanitizer
+    public socketService: SocketService,
+    public httpClient: HttpClient,
+    public sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -67,7 +67,7 @@ export class ChatComponent implements OnInit {
     this.channelSelected = false;
   }
 
-  private async initIoConnection() {
+  public async initIoConnection() {
     this.socketService.initSocket();
     this.socketService.onMessage().subscribe(async (message: string) => {
       try {
@@ -123,7 +123,7 @@ export class ChatComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 }
-  private extractBase64(jsonString: string): Promise<string> {
+  public extractBase64(jsonString: string): Promise<string> {
     return new Promise((resolve, reject) => {
       try {
         const jsonObject = JSON.parse(jsonString);
@@ -146,7 +146,7 @@ export class ChatComponent implements OnInit {
     }
   }  
 
-  private sendImageToServer(base64: string) {
+  public sendImageToServer(base64: string) {
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
     const username = sessionStorage.getItem('username') || 'Anonymous';
     const filename = sessionStorage.getItem('filename') || 'Null';
@@ -201,7 +201,7 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  private fetchUsersAndChannelsData(groupId: string) {
+  public fetchUsersAndChannelsData(groupId: string) {
     const requestPayload = { groupId: groupId };
     this.httpClient.post<any>(BACKEND_URL + '/chat', requestPayload, httpOptions).subscribe(
       (data: any) => {

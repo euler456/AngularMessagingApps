@@ -1,129 +1,218 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { ChatComponent } from './chat.component';
 import { SocketService } from '../services/socket.service';
+import { DomSanitizer } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
+@Component({selector: 'app-dummy', template: ''})
+class DummyComponent {}
+
 describe('ChatComponent', () => {
-  let component: ChatComponent;
   let fixture: ComponentFixture<ChatComponent>;
-  let socketService: jasmine.SpyObj<SocketService>;
-
-  beforeEach(async () => {
-    const socketServiceSpy = jasmine.createSpyObj('SocketService', ['initSocket', 'onMessage', 'onLatestMessages', 'joinChannel', 'leaveChannel', 'send', 'sendImage']);
-    socketServiceSpy.onMessage.and.returnValue(of('Test Message'));
-    socketServiceSpy.onLatestMessages.and.returnValue(of([{ content: 'Test Image', sender: 'Test User' }]));
-
-    await TestBed.configureTestingModule({
-      declarations: [ ChatComponent ],
-      imports: [ HttpClientTestingModule ],
-      providers: [
-        { provide: SocketService, useValue: socketServiceSpy }
-      ]
-    })
-    .compileComponents();
-  });
+  let component: ChatComponent;
+  let socketService: SocketService;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      declarations: [ChatComponent, DummyComponent], // Added DummyComponent for routerLink
+      imports: [HttpClientTestingModule],
+      providers: [SocketService, DomSanitizer],
+    });
+
     fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
-    socketService = TestBed.inject(SocketService) as jasmine.SpyObj<SocketService>;
-    fixture.detectChanges();
+    socketService = TestBed.inject(SocketService);
+
+    // Mock sessionStorage for testing
+    spyOn(sessionStorage, 'getItem').and.callFake((key: string) => {
+      if (key === 'username') return 'TestUser';
+      if (key === 'selectedChannel') return 'TestChannel';
+      if (key === 'selectedGroupId') return 'TestGroupId';
+      return null;
+    });
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should join a channel and leave previous channel', () => {
-    // Arrange
+  it('should join a channel', () => {
+    spyOn(socketService, 'joinChannel').and.stub();
     component.messagecontent = 'Test Message';
-    sessionStorage.setItem('username', 'Test User');
-    sessionStorage.setItem('selectedChannel', 'Default Channel');
 
-    // Act
-    component.joinChannel('Test Channel');
+    component.joinChannel('TestChannel');
 
-    // Assert
     expect(socketService.joinChannel).toHaveBeenCalledWith(JSON.stringify({
       content: 'Test Message',
-      sender: 'Test User',
-      channel: 'Default Channel'
-    }));
-    expect(socketService.leaveChannel).toHaveBeenCalledWith(JSON.stringify({
-      content: 'Test Message',
-      sender: 'Test User',
-      channel: 'Default Channel'
+      sender: 'TestUser',
+      channel: 'TestChannel'
     }));
   });
 
   it('should leave a channel', () => {
-    // Arrange
+    spyOn(socketService, 'leaveChannel').and.stub();
     component.messagecontent = 'Test Message';
-    sessionStorage.setItem('username', 'Test User');
-    sessionStorage.setItem('selectedChannel', 'Default Channel');
 
-    // Act
-    component.leaveChannel('Test Channel');
+    component.leaveChannel('TestChannel');
 
-    // Assert
     expect(socketService.leaveChannel).toHaveBeenCalledWith(JSON.stringify({
       content: 'Test Message',
-      sender: 'Test User',
-      channel: 'Default Channel'
+      sender: 'TestUser',
+      channel: 'TestChannel'
     }));
-    expect(component.textMessages.length).toBe(0);
-    expect(component.imageMessages.length).toBe(0);
-    expect(component.channelSelected).toBeFalse();
+    expect(component.textMessages).toEqual([]);
+    expect(component.imageMessages).toEqual([]);
+    expect(component.channelSelected).toBe(false);
   });
 
-  it('should initialize socket connection', () => {
-    // Assert
-    expect(socketService.initSocket).toHaveBeenCalled();
-  });
+  it('should extract base64 from JSON', fakeAsync(() => {
+    const base64Data = '{"content":"data:image/png;base64,abc123","sender":"User"}';
+    component.extractBase64(base64Data).then((base64) => {
+      expect(base64).toEqual('abc123');
+    });
+    tick();
+  }));
 
-  it('should handle onMessage', () => {
-    // Assert
-    expect(component.textMessages.length).toBe(1);
-    expect(component.textMessages[0].content).toBe('Test Message');
-  });
+  it('should send an image to the server', () => {
+    spyOn(socketService, 'sendImage').and.stub();
+    const base64 = 'abc123';
 
-  it('should handle onLatestMessages for image message', () => {
-    // Assert
-    expect(component.imageMessages.length).toBe(1);
-    expect(component.imageMessages[0].content).toBe('Test Image');
-    expect(component.imageMessages[0].sender).toBe('Test User');
-  });
+    component.sendImageToServer(base64);
 
-  it('should handle onLatestMessages for text message', () => {
-    // Arrange
-    const latestMessages = [{ content: 'Test Text Message', sender: 'Test User' }];
-
-    // Act
-
-    // Assert
-    expect(component.textMessages.length).toBe(1);
-    expect(component.textMessages[0].content).toBe('Test Text Message');
-    expect(component.textMessages[0].sender).toBe('Test User');
-  });
-
-  it('should handle onFileSelected', () => {
-    // Arrange
-    const event = new Event('change');
-    const base64String = 'data:image/png;base64,TestBase64String';
-    const file = new File([atob(base64String.split(',')[1])], 'TestImage.png', { type: 'image/png' });
-    
-
-    // Act
-    component.onFileSelected(event);
-
-    // Assert
     expect(socketService.sendImage).toHaveBeenCalledWith(JSON.stringify({
-      content: base64String,
-      sender: 'Test User',
-      channel: 'Default Channel'
+      content: base64,
+      sender: 'TestUser',
+      channel: 'TestChannel'
     }));
   });
 
-  // Add more tests for other functions as needed
+  it('should load channel content', () => {
+    spyOn(socketService, 'onLatestMessages').and.returnValue(of([
+      { content: 'data:image/png;base64,abc123', username: 'User' },
+      { content: 'text message', username: 'User' }
+    ]));
+
+    component.loadChannelContent('TestChannel');
+
+    expect(component.selectedChannelName).toEqual('TestChannel');
+    expect(component.channelSelected).toBe(true);
+    expect(component.textMessages.length).toBe(1);
+  });
+
+  it('should send a chat message', () => {
+    spyOn(socketService, 'send').and.stub();
+    component.messagecontent = 'Hello, world!';
+
+    component.chat();
+
+    expect(socketService.send).toHaveBeenCalledWith(JSON.stringify({
+      content: 'Hello, world!',
+      sender: 'TestUser',
+      channel: 'TestChannel'
+    }));
+    expect(component.messagecontent).toBe('');
+  });
+
+  it('should fetch users and channels data', () => {
+    spyOn(component.httpClient, 'post').and.returnValue(of({
+      users: [{ name: 'User1' }],
+      channels: [{ name: 'Channel1' }]
+    }));
+
+    component.fetchUsersAndChannelsData('TestGroupId');
+
+    expect(component.usersList.length).toBe(1);
+    expect(component.channelsList.length).toBe(1);
+  });
+
+  it('should handle file selected', fakeAsync(() => {
+    const fileReaderSpy = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
+    spyOn(window, 'FileReader').and.returnValue(fileReaderSpy);
+
+    const inputElement: HTMLInputElement = fixture.debugElement.query(By.css('input[type="file"]')).nativeElement;
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+
+    const event = new Event('change');
+    Object.defineProperty(event, 'target', {
+        writable: false,
+        value: {
+            files: [file],
+        },
+    });
+
+    inputElement.dispatchEvent(event);
+    tick();
+
+    const messageData = {
+        content: 'data:image/png;base64,xyz123',
+        sender: 'TestUser',
+        channel: 'TestChannel'
+    };
+
+    expect(fileReaderSpy.readAsDataURL).toHaveBeenCalledWith(file);
+    fileReaderSpy.onload(new ProgressEvent('load', { target: { result: 'data:image/png;base64,xyz123' } } as any));
+    expect(socketService.sendImage).toHaveBeenCalledWith(JSON.stringify(messageData));
+}));
+
+  it('should decode base64 image', () => {
+    const base64String = 'xyz123';
+    const content = `data:image/png;base64,${base64String}`;
+    const message = { data: 'base64', content };
+    
+    const result = component.decodeBase64(message);
+
+    expect(result).toBe(content);
+  });
+
+  it('should handle sending image to server with no base64 content', () => {
+    spyOn(socketService, 'sendImage').and.stub();
+
+    component.sendImageToServer('');
+
+    expect(socketService.sendImage).toHaveBeenCalledWith(JSON.stringify({
+      content: '',
+      sender: 'TestUser',
+      channel: 'TestChannel'
+    }));
+  });
+
+  it('should handle chat message with no content', () => {
+    spyOn(socketService, 'send').and.stub();
+    component.messagecontent = '';
+
+    component.chat();
+
+    expect(socketService.send).not.toHaveBeenCalled();
+  });
+
+  it('should handle chat message with content', () => {
+    spyOn(socketService, 'send').and.stub();
+    component.messagecontent = 'Hello, world!';
+
+    component.chat();
+
+    expect(socketService.send).toHaveBeenCalledWith(JSON.stringify({
+      content: 'Hello, world!',
+      sender: 'TestUser',
+      channel: 'TestChannel'
+    }));
+    expect(component.messagecontent).toBe('');
+  });
+
+  it('should handle fetching users and channels data with error', () => {
+    spyOn(component.httpClient, 'post').and.returnValue({
+      subscribe: (successCallback: any, errorCallback: any) => {
+        errorCallback('Error fetching data');
+      },
+    } as any);
+
+    spyOn(console, 'error');
+
+    component.fetchUsersAndChannelsData('TestGroupId');
+
+    expect(console.error).toHaveBeenCalledWith('Error fetching data:', 'Error fetching data');
+  });
 });
