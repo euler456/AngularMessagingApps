@@ -3,7 +3,6 @@ module.exports = function (db, app, client) {
     try {
       await client.connect();
       const action = req.body.action;
-      console.log(req.body);
       if (action === 'fetchinfo') {
         const userId = Number(req.body.userId);
         const usersCollection = db.collection('users');

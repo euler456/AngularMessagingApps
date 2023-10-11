@@ -38,7 +38,11 @@ export class ChatComponent implements OnInit {
       this.fetchUsersAndChannelsData(this.selectedGroupId);
     }
   }
-
+  public getUserProfileImageUrl(sender: string): string {
+    console.log(this.textMessages);
+    const username = sender.toLowerCase(); // Assuming sender names are in lowercase
+    return `${BACKEND_URL}/image/${username}.jpg`;
+  }
   public joinChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
@@ -162,14 +166,11 @@ export class ChatComponent implements OnInit {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
     this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
-      console.log(latestMessages);
       for (const msg of latestMessages) {
         try {
           const content = msg.content;
           if (content && content.startsWith('data:image/png;base64,')) {
             const base64String = msg.content.split(',')[1];
-            console.log(msg);
-            console.log(msg.sender);
 
             this.textMessages.push({
               data: 'base64',

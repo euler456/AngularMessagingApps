@@ -24,7 +24,6 @@ module.exports = function(db, app, formidable, client, fs, path) {
         const username = user.username; // Get the username from the user object
 
         const newFilename = username + '.jpg'; // Change the file extension to JPG
-        console.log(newFilename);
         fs.rename(newpath, path.join(form.uploadDir, newFilename), async function (err) {
           if (err) {
             console.log("Error renaming the file");
