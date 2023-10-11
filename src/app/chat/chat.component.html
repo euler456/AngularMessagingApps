@@ -17,8 +17,10 @@
     </div>
 
     <div class="chat-messages">
+            
       <ng-container >
         <div *ngFor="let m of textMessages" class="{{ m.sender === 'Me' ? 'my-message' : 'other-message' }}">
+          
           <span class="sender">{{ m.sender }}:</span>
           <ng-container *ngIf="m.data === 'base64'">
             <img [src]="decodeBase64(m)" alt="Image">

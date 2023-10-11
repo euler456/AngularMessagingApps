@@ -15,11 +15,11 @@ const httpOptions = {
 })
 
 export class ChatComponent implements OnInit {
+  usersList: { name: string; profileImage: string }[] = [];
   imageSource:any;
   messagecontent: string = "";
   textMessages: { data:string; content: string; sender: string }[] = [];
   imageMessages: { content: string; sender: string }[] = [];
-  usersList: any[] = [];
   channelsList: any[] = [];
   selectedGroupId: string | null = null;
   selectedChannelName: string = "Default Channel";
@@ -168,10 +168,13 @@ export class ChatComponent implements OnInit {
           const content = msg.content;
           if (content && content.startsWith('data:image/png;base64,')) {
             const base64String = msg.content.split(',')[1];
+            console.log(msg);
+            console.log(msg.sender);
+
             this.textMessages.push({
               data: 'base64',
               content: String(base64String),
-              sender: msg.username || 'Anonymous'
+              sender: msg.sender || 'Anonymous'
             });
           } else {
             // Handle other types of messages if needed

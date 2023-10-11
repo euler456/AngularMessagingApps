@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {ImguploadService} from '../imgupload.service';
+import { ImguploadService } from '../imgupload.service';
 
 const httpOptions = {
-  headers: new HttpHeaders({'Content-Type': 'application/json'})
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
 const BACKEND_URL = 'http://localhost:3000';
@@ -16,9 +16,10 @@ const BACKEND_URL = 'http://localhost:3000';
 })
 export class ProfileComponent implements OnInit {
   userProfile: any = {};
-  selectedFile:any = null;
+  selectedFile: any = null;
   imagepath = sessionStorage.getItem('filename');
-  constructor(private router: Router, private httpClient: HttpClient,private imguploadService:ImguploadService) {}
+
+  constructor(private router: Router, private httpClient: HttpClient, private imguploadService: ImguploadService) { }
 
   ngOnInit(): void {
     this.userProfile.username = sessionStorage.getItem('username');
@@ -37,7 +38,6 @@ export class ProfileComponent implements OnInit {
       username: this.userProfile.username,
       email: this.userProfile.email,
     };
-    console.log(requestPayload);
 
     this.httpClient.post(BACKEND_URL + '/loginafter', requestPayload, httpOptions)
       .subscribe((data: any) => {
@@ -51,21 +51,26 @@ export class ProfileComponent implements OnInit {
         }
       });
   }
+
   uploadProfileImage() {
     const userId = sessionStorage.getItem('userid');
+    const username = sessionStorage.getItem('username'); // Get the username from session storage
+
     const fd = new FormData();
     fd.append('image', this.selectedFile, this.selectedFile.name);
+
     if (userId !== null) {
       fd.append('userId', userId);
-      console.log(userId);
     }
-    this.imguploadService.imgupload(fd).subscribe(res => {  
-      const filename = res.data.filename;
-      sessionStorage.setItem('filename', filename);
-      this.imagepath = filename;
 
+    const fileExtension = 'jpg'; // Force extension to JPG
+
+    const filename = username + '.' + fileExtension;
+    sessionStorage.setItem('filename', filename);
+    this.imagepath = filename;
+
+    this.imguploadService.imgupload(fd).subscribe(res => {
+      // Handle the response here
     });
   }
-  
-  
 }
