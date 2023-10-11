@@ -27,23 +27,25 @@ I've created a repository named "3813week4" and linked it to my local computer. 
 I've also created a branch called "week5" to upload all the changes made after week 5. I push these changes whenever I complete or modify different parts of the project. For instance, once I've finished implementing the user login functions, I use GitHub Desktop to upload the related files. This includes the Angular code, server code, and JSON files.
 
 Within the repository, there are two main folders. The first is "src," which contains all the Angular user interface components. The second is the "server" folder, which includes all the Node.js backend code. Notably, there's a folder called "data" under the server directory, where all the JSON files are stored.
-## Data Structures
-User Data Structure:
-Attributes:
+## User Data Structure:
 
-username: The username of the user.
-email: The email address of the user.
-roles: The roles or permissions assigned to the user (e.g., "admin," "groupadmin," "user").
-password: The user's password (Note: In practice, passwords should be securely hashed and not stored as plaintext).
-userid: A unique identifier for the user.
-groupid: An array of group IDs that the user belongs to.
-filename: The filename associated with the user's profile image.
-Group Data Structure:
-Attributes:
+**Attributes:**
+- `username`: The username of the user.
+- `email`: The email address of the user.
+- `roles`: The roles or permissions assigned to the user (e.g., "admin," "groupadmin," "user").
+- `password`: The user's password (Note: In practice, passwords should be securely hashed and not stored as plaintext).
+- `userid`: A unique identifier for the user.
+- `groupid`: An array of group IDs that the user belongs to.
+- `filename`: The filename associated with the user's profile image.
 
-groupid: A unique identifier for the group.
-group: The name or title of the group.
-channels: An array of channel names associated with the group.
+## Group Data Structure:
+
+**Attributes:**
+- `groupid`: A unique identifier for the group.
+- `group`: The name or title of the group.
+- `channels`: An array of channel names associated with the group.
+
+---
 ## RestAPI
 Server.js:server.js file defines several routes that handle different aspects of your application, including user authentication, superadmin privileges, chat functionality, and user group management. These routes expect specific parameters and return relevant JSON data based on the requested actions. The actual implementation details are found in separate modules (e.g., postLogin, postLoginafter, superadmin, chat, group) that are required for each route.
 
