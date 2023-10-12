@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SocketService } from '../services/socket.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,33 +16,39 @@ const httpOptions = {
 
 export class ChatComponent implements OnInit {
   usersList: { name: string; profileImage: string }[] = [];
-  imageSource:any;
+  imageSource: any;
   messagecontent: string = "";
-  textMessages: { data:string; content: string; sender: string }[] = [];
+  textMessages: { data: string; content: string; sender: string }[] = [];
   imageMessages: { content: string; sender: string }[] = [];
   channelsList: any[] = [];
   selectedGroupId: string | null = null;
   selectedChannelName: string = "Default Channel";
   channelSelected: boolean = false;
+
   constructor(
     public socketService: SocketService,
     public httpClient: HttpClient,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.initIoConnection();
     this.selectedGroupId = sessionStorage.getItem('selectedGroupId');
 
     if (this.selectedGroupId) {
       this.fetchUsersAndChannelsData(this.selectedGroupId);
     }
+
+    setInterval(() => {
+      this.initIoConnection();
+    }, 1000);
   }
+
   public getUserProfileImageUrl(sender: string): string {
-    console.log(this.textMessages);
-    const username = sender.toLowerCase(); // Assuming sender names are in lowercase
+    const username = sender.toLowerCase();
     return `${BACKEND_URL}/image/${username}.jpg`;
   }
+
   public joinChannel(channelName: string) {
     const username = sessionStorage.getItem('username') || 'Anonymous';
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
@@ -51,7 +57,9 @@ export class ChatComponent implements OnInit {
       sender: username,
       channel: selectedChannel
     };
+
     this.socketService.joinChannel(JSON.stringify(messageData));
+
     if (selectedChannel !== channelName) {
       this.leaveChannel(selectedChannel);
     }
@@ -65,33 +73,45 @@ export class ChatComponent implements OnInit {
       sender: username,
       channel: selectedChannel
     };
-    this.socketService.leaveChannel(JSON.stringify(messageData));    
+
+    this.socketService.leaveChannel(JSON.stringify(messageData));
     this.textMessages = [];
     this.imageMessages = [];
     this.channelSelected = false;
+
+    // Manually trigger change detection
+    this.cd.detectChanges();
   }
 
   public async initIoConnection() {
     this.socketService.initSocket();
-    this.socketService.onMessage().subscribe(async (message: string) => {
+    this.socketService.onMessage().subscribe(async (message: any) => {
       try {
         const username = sessionStorage.getItem('username');
-        const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel'; 
-        if (message.startsWith('{"content":"data:image/png')) {
-          try {
-            const base64String = await this.extractBase64(message);
-            
-            console.log(this.textMessages);
+        const selectedChannel = sessionStorage.getItem('selectedChannel') || 'Default Channel';
 
-          } catch (error) {
-            console.error('Error decoding image:', error);
+        if (!this.isMessageInArray(message, this.textMessages)) {
+          if (message.content.startsWith('data:image/png')) {
+            try {
+              const base64String = message.content.split(',')[1];
+              this.textMessages.push({
+                data: 'base64',
+                content: String(base64String),
+                sender: message.sender || 'Anonymous'
+              });
+
+              // Manually trigger change detection
+              this.cd.detectChanges();
+            } catch (error) {
+              console.error('Error decoding image:', error);
+            }
+          } else {
+            this.textMessages.push({
+              data: 'normal',
+              content: message.content,
+              sender: message.sender || 'Anonymous',
+            });
           }
-        } else {
-          this.textMessages.push({
-            data: 'normal',
-            content: message,
-            sender: username || 'Anonymous',
-          });
         }
       } catch (error) {
         console.error('Error parsing message:', error);
@@ -99,19 +119,35 @@ export class ChatComponent implements OnInit {
     });
     this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
       for (const msg of latestMessages) {
-        try {
-          if (msg && msg.content && typeof msg.content === 'string' && msg.content.startsWith('data:image/png;base64,')) {
-            const base64String = msg.content.split(',')[1];
-           
-          } else {
-            // Handle other types of messages if needed
+        if (!this.isMessageInArray(msg, this.textMessages)) {
+          try {
+            const content = msg.content;
+            if (content.startsWith('data:image/png')) {
+              const base64String = msg.content.split(',')[1];
+              this.textMessages.push({
+                data: 'base64',
+                content: String(base64String),
+                sender: msg.sender || 'Anonymous'
+              });
+              // Trigger change detection
+              this.cd.detectChanges();
+            } else {
+              this.textMessages.push({
+                data: 'normal',
+                content: msg.content,
+                sender: msg.sender || 'Anonymous'
+              });
+            }
+          } catch (error) {
+            console.error('Error processing message:', error);
           }
-        } catch (error) {
-          console.error('Error processing message:', error);
         }
       }
     });
-    
+  }
+  
+  private isMessageInArray(message: any, messageArray: any[]): boolean {
+    return messageArray.some((m) => m.content === message.content);
   }
 
  public onFileSelected(event: Event) {
@@ -122,6 +158,7 @@ export class ChatComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = (e) => {
       const base64 = (e.target?.result as string);
+      console.log(base64);
       this.sendImageToServer(base64);
     };
     reader.readAsDataURL(file);
@@ -146,9 +183,10 @@ export class ChatComponent implements OnInit {
       return `data:image/png;base64, ${base64String}`;
     } catch (error) {
       console.error('Error decoding image:', error);
-      return ''; // Return an empty string or a placeholder image URL if decoding fails
+      return ''; 
     }
-  }  
+  }
+  
 
   public sendImageToServer(base64: string) {
     const selectedChannel = sessionStorage.getItem('selectedChannel') || 'default';
@@ -165,26 +203,6 @@ export class ChatComponent implements OnInit {
   public loadChannelContent(channelName: string) {
     this.selectedChannelName = channelName;
     sessionStorage.setItem('selectedChannel', channelName);
-    this.socketService.onLatestMessages().subscribe(async (latestMessages: any[]) => {
-      for (const msg of latestMessages) {
-        try {
-          const content = msg.content;
-          if (content && content.startsWith('data:image/png;base64,')) {
-            const base64String = msg.content.split(',')[1];
-
-            this.textMessages.push({
-              data: 'base64',
-              content: String(base64String),
-              sender: msg.sender || 'Anonymous'
-            });
-          } else {
-            // Handle other types of messages if needed
-          }
-        } catch (error) {
-          console.error('Error processing message:', error);
-        }
-      }
-    });
     
     this.channelSelected = true;
   }

@@ -16,19 +16,20 @@
       <!-- Add channel options or settings here -->
     </div>
 
-    <div *ngFor="let m of textMessages" class="{{ m.sender === 'Me' ? 'my-message' : 'other-message' }}">
-      <img *ngIf="m.sender !== 'Me'" [src]="getUserProfileImageUrl(m.sender)" alt="Profile Image" class="profile-image">
-      <span class="sender">{{ m.sender }}:</span>
-      <ng-container *ngIf="m.data === 'base64'">
-        <img [src]="decodeBase64(m)" alt="Image" class="base64-image">
-      </ng-container>
-      
-      <ng-container *ngIf="m.data !== 'base64'">
-        <span class="message-content">{{ m.content }}</span>
-      </ng-container>
-    
-      <!-- Display user profile image -->
-    </div>
+    <ng-container *ngFor="let m of textMessages">
+      <div>
+        <img *ngIf="m.sender !== 'Me'" [src]="getUserProfileImageUrl(m.sender)" alt="Profile Image" class="profile-image">
+        <span class="sender">{{ m.sender }}:</span>
+        
+        <ng-container *ngIf="m.data === 'base64'; else normalContent">
+          <img [src]="decodeBase64(m)" alt="Image" class="base64-image">
+        </ng-container>        
+        
+        <ng-template #normalContent>
+          <span class="message-content">{{ m.content }}</span>
+        </ng-template>
+      </div>
+    </ng-container>
     
 
     <!-- Chat input -->

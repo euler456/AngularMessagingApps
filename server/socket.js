@@ -9,17 +9,24 @@ module.exports = {
         const channel = messageData.channel;
         const sender = messageData.sender;
         const joinMessage = `${sender} has joined the channel.`;
-      
+    
+        const joinMessageData = {
+          content: joinMessage,
+          sender: sender,
+          channel: channel
+        };
+    
         socket.join(channel);
-        io.to(channel).emit('message', joinMessage);
-      
+        io.to(channel).emit('message', joinMessageData);
+    
         latestMessages[channel] = latestMessages[channel] || [];
-        latestMessages[channel].push({ content: joinMessage, sender }); // Add join message to latest messages
-      
+    
         if (latestMessages[channel].length > 10) {
-          latestMessages[channel].shift(); 
+          latestMessages[channel].shift();
         }
         socket.emit('latestMessages', latestMessages[channel]);
+        latestMessages[channel].push(joinMessageData); // Add join message to latest messages
+
       });
       
 
@@ -32,14 +39,14 @@ module.exports = {
           latestMessages[channel] = [];
         }
       
-        latestMessages[channel].push(messageData);
         if (latestMessages[channel].length > 10) {
           latestMessages[channel].shift();
         }
-        console.log('this is form message '+latestMessages[channel]);
 
-        io.to(channel).emit('message', messageData.content);
+        io.to(channel).emit('message', messageData);
         socket.emit('latestMessages', latestMessages[channel]);
+        latestMessages[channel].push(messageData);
+        console.log(latestMessages[channel]);
 
       });
 
@@ -47,19 +54,12 @@ module.exports = {
         const messageData = JSON.parse(image);
         const channel = messageData.channel;
         const sender = messageData.sender;
-        const buffer = Buffer.from(messageData.content, 'base64');
-        // Ensure there is a separate array for image messages
-        latestMessages[channel] = latestMessages[channel] ;
-        latestMessages[channel].push(messageData);
-        console.log('this is from image');
-        console.log( latestMessages[channel]);
-
+        
         // Emit the image message to all clients in the channel
         io.to(channel).emit('image', messageData);
-
         // You can also emit the updated latest messages
         socket.emit('latestMessages', latestMessages[channel]);
-
+        latestMessages[channel].push(messageData);
 
       });
       
@@ -68,12 +68,20 @@ module.exports = {
         const channel = messageData.channel;
         const sender = messageData.sender;
         const leaveMessage = `${sender} has left the channel.`;
-
-        socket.leave(channel);
-        io.to(channel).emit('message', leaveMessage);
-
+        const leaveMessageData = {
+          content: leaveMessage,
+          sender: sender,
+          channel: channel
+        };
         latestMessages[channel] = latestMessages[channel] || [];
+
+        io.to(channel).emit('message', leaveMessageData);
+
         socket.emit('latestMessages', latestMessages[channel]);
+
+        latestMessages[channel].push(leaveMessageData);
+        console.log(latestMessages[channel]);
+        socket.leave(channel);
       });
     });
   },
