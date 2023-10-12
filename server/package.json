@@ -5,7 +5,7 @@
   "scripts": {
     "test": "nyc mocha './integrationTest/**/*.js'",
     "unitTest": "mocha ./unitTest/test.js",
-    "integrationTest": "mocha ./integrationTest/**/*.js",
+    "integrationTest": "nyc mocha ./integrationTest/**/*.js",
     "start": "node server.js"
   },
   
