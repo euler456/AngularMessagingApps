@@ -34,7 +34,105 @@ describe('ChatComponent', () => {
       return null;
     });
   });
-
+  it('should decode base64 image', () => {
+    const base64String = 'xyz123';
+    const content = `data:image/png;base64,${base64String}`;
+    const message = { data: 'base64', content };
+    
+    const result = component.decodeBase64(message);
+  
+    expect(result).toBe(content);
+  });
+  
+  it('should handle sending image to server with no base64 content', () => {
+    spyOn(socketService, 'sendImage').and.stub();
+  
+    component.sendImageToServer('');
+  
+    expect(socketService.sendImage).toHaveBeenCalledWith(JSON.stringify({
+      content: '',
+      sender: 'TestUser',
+      channel: 'TestChannel'
+    }));
+  });
+  
+  it('should handle chat message with no content', () => {
+    spyOn(socketService, 'send').and.stub();
+    component.messagecontent = '';
+  
+    component.chat();
+  
+    expect(socketService.send).not.toHaveBeenCalled();
+  });
+  it('should handle fetching users and channels data with success', () => {
+    spyOn(component.httpClient, 'post').and.returnValue(of({
+      users: [{ name: 'User1' }],
+      channels: [{ name: 'Channel1' }]
+    }));
+  
+    component.fetchUsersAndChannelsData('TestGroupId');
+  
+    expect(component.usersList.length).toBe(1);
+    expect(component.channelsList.length).toBe(1);
+  });
+  
+  it('should handle fetching users and channels data with error', () => {
+    spyOn(component.httpClient, 'post').and.returnValue({
+      subscribe: (successCallback: any, errorCallback: any) => {
+        errorCallback('Error fetching data');
+      },
+    } as any);
+  
+    spyOn(console, 'error');
+  
+    component.fetchUsersAndChannelsData('TestGroupId');
+  
+    expect(console.error).toHaveBeenCalledWith('Error fetching data:', 'Error fetching data');
+  });
+  
+  it('should handle chat message with content', () => {
+    spyOn(socketService, 'send').and.stub();
+    component.messagecontent = 'Hello, world!';
+  
+    component.chat();
+  
+    expect(socketService.send).toHaveBeenCalledWith(JSON.stringify({
+      content: 'Hello, world!',
+      sender: 'TestUser',
+      channel: 'TestChannel'
+    }));
+    expect(component.messagecontent).toBe('');
+  });
+  
+  it('should handle file selected', fakeAsync(() => {
+    const fileReaderSpy = jasmine.createSpyObj('FileReader', ['readAsDataURL', 'onload']);
+    spyOn(window, 'FileReader').and.returnValue(fileReaderSpy);
+  
+    const inputElement: HTMLInputElement = fixture.debugElement.query(By.css('input[type="file"]')).nativeElement;
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+  
+    const event = new Event('change');
+    Object.defineProperty(event, 'target', {
+        writable: false,
+        value: {
+            files: [file],
+        },
+    });
+  
+    inputElement.dispatchEvent(event);
+    tick();
+  
+    const messageData = {
+        content: 'data:image/png;base64,xyz123',
+        sender: 'TestUser',
+        channel: 'TestChannel'
+    };
+  
+    expect(fileReaderSpy.readAsDataURL).toHaveBeenCalledWith(file);
+    fileReaderSpy.onload(new ProgressEvent('load', { target: { result: 'data:image/png;base64,xyz123' } } as any));
+    expect(socketService.sendImage).toHaveBeenCalledWith(JSON.stringify(messageData));
+  }));
+  
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
