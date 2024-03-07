@@ -1,32 +1,7 @@
-# Week4tut
+# Angular and NodeJs Website
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+Creating a messaging website with Angular for the front-end, Node.js for the back-end, and a No-SQL database.
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Github link
-https://github.com/euler456/3813week4.git
-
-## Git
-I've created a repository named "3813week4" and linked it to my local computer. It's based on the workshop we covered in week 4. I'm using GitHub Desktop, which automatically displays any changes made by users. Users only need to provide a brief message when committing changes, and they can then push those changes to GitHub.
-
-I've also created a branch called "week5" to upload all the changes made after week 5. I push these changes whenever I complete or modify different parts of the project. For instance, once I've finished implementing the user login functions, I use GitHub Desktop to upload the related files. This includes the Angular code, server code, and JSON files.
-
-Within the repository, there are two main folders. The first is "src," which contains all the Angular user interface components. The second is the "server" folder, which includes all the Node.js backend code. Notably, there's a folder called "data" under the server directory, where all the JSON files are stored.
 ## User Data Structure:
 
 **Attributes:**
@@ -88,6 +63,28 @@ The LoginComponent is responsible for user authentication. It provides a login f
 The ProfileComponent allows users to edit their profile information, including their username and email. It displays a form where users can modify these details, and upon clicking the "Edit" button, the changes are saved to the session storage, updating the user's profile.
 
 The SuperadminComponent is responsible for managing users and their roles. For users with admin or superadmin privileges, it displays a list of users in a table format, allowing them to change a user's role (e.g., make a user a group admin, superadmin, or a regular user) or delete a user. Additionally, it provides a form to create new users, including specifying their username, email, roles, and password. Users with superadmin privileges can perform these administrative tasks to manage the application's user base efficiently.
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Git
+I've created a repository named "AnularMessageApp" and linked it to my local computer. I'm using GitHub Desktop, which automatically displays any changes made by users. Users only need to provide a brief message when committing changes, and they can then push those changes to GitHub.
+
+I've also created a branch called "week5" to upload all the changes made after week 5. I push these changes whenever I complete or modify different parts of the project. For instance, once I've finished implementing the user login functions, I use GitHub Desktop to upload the related files. This includes the Angular code, server code, and JSON files.
+
+Within the repository, there are two main folders. The first is "src," which contains all the Angular user interface components. The second is the "server" folder, which includes all the Node.js backend code. Notably, there's a folder called "data" under the server directory, where all the JSON files are stored.
+
+
+## Development server
+
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Code scaffolding
+
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+
+## Build
+
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
